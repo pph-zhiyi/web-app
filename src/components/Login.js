@@ -12,8 +12,8 @@ export default class AntdTest extends React.Component {
     render() {
         return (
             <center>
-                <h1><span>登录个🔨</span></h1>
-                <a href="http://localhost:3000/sider">点个🔨</a>
+                <h1><span>登录个锤子</span></h1>
+                <a href="http://localhost:3000">点个锤子</a>
             </center>
         );
     }

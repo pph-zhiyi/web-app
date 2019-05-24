@@ -5,6 +5,7 @@ import Login from '../components/Login';
 import Sider from '../components/Sider';
 import AntdTest from '../components/AntdTest';
 import SiderIndex from '../pages/SiderIndex';
+import UserList from '../pages/user/UserList';
 
 const AppRouter = () => {
     return (
@@ -13,6 +14,7 @@ const AppRouter = () => {
             <Route path="/login" component={Login} />
             <Route path="/antd" component={AntdTest} />
             <Route path="/sider" component={Sider} />
+            <Route path="/user/list" component={UserList} />
         </BrowserRouter>
     )
 }
