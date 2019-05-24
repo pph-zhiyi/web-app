@@ -77,7 +77,7 @@ export default class SiderIndex extends React.Component {
                             <UserList />
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                    <Footer style={{ textAlign: 'center' }}> PPH ©2019 Created by Zhiyi</Footer>
                 </Layout>
             </Layout>
         );
