@@ -1,6 +1,24 @@
-import api from '../utils/Api';
+import api from '../utils/ApiUtil';
 
-export function queryUserList(values) {
+export const queryUserListAction = (values) => {
+    return api.post(
+        `localhost:8888/user/query`,
+        {
+            "pageNo": values.pageNum,
+            "pageSize": values.pageSize,
+            "name": values.name,
+            "sex": values.sex,
+            "age": values.age
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        }
+    );
+}
+
+export const saveUserAction = (values) => {
     return api.post(
         `localhost:8888/user/query`,
         {

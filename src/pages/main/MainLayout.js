@@ -98,7 +98,7 @@ const MainLayout = ({ children, location }) => {
         <Layout>
             <MainHeader location={location} />
             <Layout className={styles.contentPadding}>
-                <Content className="ant-layout ant-layout-content" className={styles.contentCss}>
+                <Content /** className="ant-layout ant-layout-content" */className={styles.contentCss}>
                     {children}
                 </Content>
             </Layout>

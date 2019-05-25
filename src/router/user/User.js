@@ -1,14 +1,14 @@
 import React from 'react';
 import {connect } from 'dva';
-import SiderIndex from '../../pages/main/SiderIndex';
-import User from '../../pages/user/User';
+import MainLayout from '../../pages/main/MainLayout';
+import UserList from '../../pages/user/UserList';
 
 function User ({location}) {
-    return (<SiderIndex location={location}>
+    return (<MainLayout location={location}>
         <div>
-            <User></User>
+            <UserList />
         </div>
-    </SiderIndex>);
+    </MainLayout>);
 }
 
-export default connect()(UserList);
+export default connect()(User);

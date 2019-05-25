@@ -2,7 +2,8 @@ import queryString from 'query-string';
 import * as UserService from '../services/UserService';
 import { message } from 'react';
 
-const defPageNum = 1, defPageSize = 11;
+const defPageNum = 1;
+const defPageSize = 11;
 
 export default {
     namespace: 'userModel',
@@ -12,8 +13,7 @@ export default {
         userListPageNum: 0,
         userListPageSize: 0,
         userListTotal: 0,
-        userValues: null,
-        userListData: []
+        userValues: null
     },
     reducers: {
         initPageParameterSave(state, { payload: { query } }) {
@@ -49,7 +49,7 @@ export default {
                     values = Object.assign({}, userValues)
                 }
 
-                const { data } = yield call(UserService.querUserList, values);
+                const { data } = yield call(UserService.queryUserListAction, values);
 
                 yield put({
                     type: 'userListDataSave',
@@ -66,7 +66,7 @@ export default {
         // save
         *saveUserAction({ payload: { values } }, { call, put, select }) {
             const { code } = yield call(UserService.saveUserAction, values);
-            code == 200 ? message.success("新增成功！") : message.error("新增失败！");
+            code === 200 ? message.success("新增成功！") : message.error("新增失败！");
 
             let userValues = {
                 "pageNum": defPageNum,
@@ -77,7 +77,7 @@ export default {
         // delete
         *deleteUserByIdAction({ payload: { values } }, { call, put, select }) {
             const { code } = yield call(UserService.deleteUserByIdAction, values);
-            code == 200 ? message.success("删除成功！") : message.error("删除失败！");
+            code === 200 ? message.success("删除成功！") : message.error("删除失败！");
 
             let userValues = {
                 "pageNum": defPageNum,
@@ -88,7 +88,7 @@ export default {
         // edit
         *editUserByIdAction({ payload: { values } }, { call, put, select }) {
             const { code } = yield call(UserService.editUserByIdAction, values);
-            code == 200 ? message.success("修改成功！") : message.error("修改失败！");
+            code === 200 ? message.success("修改成功！") : message.error("修改失败！");
 
             let userValues = {
                 "pageNum": defPageNum,

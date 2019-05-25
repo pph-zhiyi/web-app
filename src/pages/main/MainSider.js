@@ -8,10 +8,9 @@ const { SubMenu } = Menu;
 export default class MainSider extends React.Component {
     constructor(props) {
         super(props);
-    };
-
-    state = {
-        collapsed: false
+        this.state = {
+            collapsed: false
+        }
     };
 
     toggle = () => {
@@ -27,7 +26,9 @@ export default class MainSider extends React.Component {
     render() {
         const location = this.props.location;
         let defaultSelectedKeys = location.pathname;
+        console.log("defaultSelectedKeys is: ", defaultSelectedKeys);
         let defaultOpenKeys = location.pathname.split('/')[1] || null;
+        console.log("defaultOpenKeys is: ", defaultOpenKeys)
 
         return (
             <div className="ant-layout-sider" style={{ flex: this.UNSAFE_componentWillMount.state.collapsed ? '0 0 80px' : '0 0 200px' }}>
