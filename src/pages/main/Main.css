@@ -1,0 +1,87 @@
+.warpper {
+    min-height: 100%;
+    height: auto;
+}
+
+.logoText {
+    font-size: 20px;
+}
+
+.avatar {
+    height: 40px;
+    line-height: 40px;
+    margin: 12px 0px 0px 8px;
+    float: right;
+}
+
+.local {
+    float: right;
+    margin-right: 12px;
+}
+
+.logo {
+    width: 140px;
+    height: 32px;
+    text-align: center;
+    margin: 16px;
+    font-size: 20px;
+    color: #FFF;
+}
+
+:global(.ant-select .ant-select-selection) {
+    background: transparent !important;
+    transition: all 0.5s cubic-bezier(0.455, 0.03, 0.515, 955)
+}
+
+:global(.ant-select .ant-select-selection .ant-select-arrow) {
+    background: transparent !important;
+}
+
+.line {
+    border-bottom: 1px solid #DDD;
+}
+
+.bt {
+    font-size: 16px;
+    margin-left: 20px;
+    color: #999;
+    font-weight: 800;
+}
+
+.contentPadding {
+    padding: 16px;
+}
+
+.contentCss {
+    background: #fff;
+    padding: 18px;
+    min-height: 568px;
+}
+
+.asmpFooter {
+    text-align: center;
+    background: #FFF;
+    padding: 6px;
+    margin: 0 16px 16px 16px;
+}
+
+.a {
+    columns: #666;
+}
+
+.a:hover {
+    color: #108ee9;
+    font-weight: 800;
+}
+
+.link {
+    background: rgb(255, 255, 255);
+    padding: 16px;
+    margin: 0 16px 1px 16px;
+    text-align: center;
+}
+
+.headerBreadcrumvCss {
+    float: left;
+    margin-left: -50px;
+}

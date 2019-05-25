@@ -11,8 +11,6 @@ export default class UserList extends React.Component {
     }
 
 
-
-
     render() {
         const columns = [
             {
