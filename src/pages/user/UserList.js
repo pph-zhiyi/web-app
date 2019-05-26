@@ -10,6 +10,19 @@ export default class UserList extends React.Component {
         }
     }
 
+    componentDidMount() {
+        fetch(
+            'http://localhost:8888/user/query',{method:"post", body: {}, headers: {"content-type": ""}}
+        )
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({ users: data })
+            })
+            .catch(e => console.log('错误:', e))
+    }
+
+
 
 
 

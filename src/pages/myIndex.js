@@ -1,41 +1,21 @@
 import React from 'react';
-import { Layout, Menu, Icon, Breadcrumb } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import '../App.css';
-// import UserList from './user/UserList';
-// import AntdTest from '../components/AntdTest';
-import { Link } from 'react-router-dom';
+import UserList from './user/UserList';
+import AntdTest from '../components/AntdTest';
+import { Link,Route,HashRouter as Router } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
-export default class SiderIndex extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         collapsed: false,
-    //         content: <UserList />,
-    //         contentKey: {
-    //             "userList": <UserList />,
-    //             "antdTest": <AntdTest />
-    //         }
-    //     }
-    // }
+export default class MyIndex extends React.Component {
 
-    // onCollapse = collapsed => {
-    //     console.log(collapsed);
-    //     this.setState({ collapsed });
-    // };
-
-    // changeContent = (key) => {
-    //     console.log("key: ", key);
-    //     this.setState({ content: this.state.contentKey[key] });
-    // }
 
     render() {
         return (
+            <Router>
             <Layout style={{ minHeight: '100vh' }}>
-                <Sider collapsible collapsed={this.state.collapsed}
-                    onCollapse={this.onCollapse}
+                <Sider collapsible 
                 >
                     <div className="logo" />
                     <Menu theme="dark" defaultSelectedKeys={['userList']} mode="inline">
@@ -58,8 +38,8 @@ export default class SiderIndex extends React.Component {
                                 </span>
                             }
                         >
-                            <Menu.Item key="userList" onClick={this.changeContent("userList")}> 用户管理列表 </Menu.Item>
-                            <Menu.Item key="antdTest" onClick={this.changeContent("antdTest")}> Bill </Menu.Item>
+                            <Menu.Item key="userList" > <Link to="/user/list" >用户管理列表 </Link></Menu.Item>
+                            <Menu.Item key="antdTest" >  <Link to="/antd/test" >ANTD test </Link> </Menu.Item>
                             <Menu.Item key="5"> Alex </Menu.Item>
                         </SubMenu>
                         <SubMenu
@@ -83,17 +63,14 @@ export default class SiderIndex extends React.Component {
                 <Layout>
                     <Header style={{ background: '#fff', padding: 0 }} />
                     <Content style={{ margin: '0 16px' }}>
-                        <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item>User</Breadcrumb.Item>
-                            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                        </Breadcrumb>
-                        <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-                            {this.state.content}
-                        </div>
+                    <Route path="/user/list" component={UserList} />
+                    <Route path="/antd/test" component={AntdTest} />
                     </Content>
                     <Footer style={{ textAlign: 'center' }}> PPH ©2019 Created by Zhiyi</Footer>
                 </Layout>
             </Layout>
+
+            </Router>
         );
     }
 }

@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 import '../index.css';
 
 
-export default class AntdTest extends React.Component {
+export default class Login extends React.Component {
     state = {
         date: null,
     };
@@ -13,7 +13,7 @@ export default class AntdTest extends React.Component {
         return (
             <center>
                 <h1><span>登录个锤子</span></h1>
-                <a href="http://localhost:3000">点个锤子</a>
+                <a href="http://localhost:3000/index">点个锤子</a>
             </center>
         );
     }
