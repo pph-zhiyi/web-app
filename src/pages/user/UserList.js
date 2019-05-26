@@ -1,29 +1,28 @@
 import React from 'react';
-import { Table, Tag, Menu, Popconfirm, Dropdown, Icon, } from 'antd';
+import { Table, Menu, Popconfirm, Dropdown, Icon, Tag } from 'antd';
 import '../../App.css';
+import moment from "moment";
 
 export default class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            listData: []
         }
     }
 
     componentDidMount() {
         fetch(
-            'http://localhost:8888/user/query',{method:"post", body: {}, headers: {"content-type": ""}}
-        )
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-                this.setState({ users: data })
-            })
-            .catch(e => console.log('错误:', e))
+            'http://localhost:8888/user/query',
+            {
+                method: "POST",
+                body: JSON.stringify({}),
+                headers: { 'Content-Type': 'application/json;charset=utf-8' }
+            }
+        ).then(res => res.json()).then(data => {
+            this.setState({ listData: data.data })
+        }).catch(e => console.log('错误:', e))
     }
-
-
-
 
 
     render() {
@@ -33,38 +32,49 @@ export default class UserList extends React.Component {
                 dataIndex: 'name',
                 key: 'name',
                 render: (text, record) => {
-                    return (<span>text</span>);
+                    return (<span>{text}</span>);
                 },
+            },
+            {
+                title: 'Sex',
+                key: 'sex',
+                dataIndex: 'sex',
+                render: (text, record) => {
+                    let color = text === "男" ? "blue" : text === "女" ? "red" : "gray";
+                    return (
+                        <Tag color={color} key={text}>
+                            {text || "暂无"}
+                        </Tag>
+                    );
+                }
             },
             {
                 title: 'Age',
                 dataIndex: 'age',
                 key: 'age',
+                render: (text, record) => {
+                    if (text) {
+                        return (<span> {text} </span>);
+                    } else {
+                        return (<Tag color="gray" key={text}> 暂无 </Tag>);
+                    }
+                },
             },
             {
-                title: 'Address',
-                dataIndex: 'address',
-                key: 'address',
+                title: '创建时间',
+                dataIndex: 'gmt_create',
+                key: 'gmt_create',
+                render: (text, record) => {
+                    return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
+                }
             },
             {
-                title: 'Tags',
-                key: 'tags',
-                dataIndex: 'tags',
-                render: tags => (
-                    <span>
-                        {tags.map(tag => {
-                            let color = tag.length > 5 ? 'geekblue' : 'green';
-                            if (tag === 'loser') {
-                                color = 'volcano';
-                            }
-                            return (
-                                <Tag color={color} key={tag}>
-                                    {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })}
-                    </span>
-                ),
+                title: '修改时间',
+                dataIndex: 'gmt_modify',
+                key: 'gmt_modify',
+                render: (text, record) => {
+                    return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
+                }
             },
             {
                 title: '操作',
@@ -81,7 +91,7 @@ export default class UserList extends React.Component {
                         <Menu>
                             <Menu.Item>
                                 <span onClick={updateData}>
-                                    <b>修改</b>
+                                    <b> 编辑用户 </b>
                                 </span>
                             </Menu.Item>
                             <Menu.Item>
@@ -89,7 +99,9 @@ export default class UserList extends React.Component {
                                     title="确定删除吗？"
                                     onConfirm={delData}
                                 >
-                                    <span>删除</span>
+                                    <span> 
+                                       <b> 删除用户 </b> 
+                                    </span>
                                 </Popconfirm>
                             </Menu.Item>
                         </Menu>
@@ -104,37 +116,13 @@ export default class UserList extends React.Component {
             },
         ];
 
-        const data = [
-            {
-                key: '1',
-                name: 'John Brown',
-                age: 32,
-                address: 'New York No. 1 Lake Park',
-                tags: ['nice', 'developer'],
-            },
-            {
-                key: '2',
-                name: 'Jim Green',
-                age: 42,
-                address: 'London No. 1 Lake Park',
-                tags: ['loser'],
-            },
-            {
-                key: '3',
-                name: 'Joe Black',
-                age: 32,
-                address: 'Sidney No. 1 Lake Park',
-                tags: ['cool', 'teacher'],
-            },
-        ];
-
         return (
             <div className="ant-table-warpper">
                 <div>
                     <Table
                         className="components-table-demo-nested"
                         columns={columns}
-                        dataSource={data}
+                        dataSource={this.state.listData}
                         rowKey={record => record.id}
                     />
                 </div>
