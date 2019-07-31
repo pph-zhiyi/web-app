@@ -21,7 +21,7 @@ export default class UserList extends React.Component {
             }
         ).then(res => res.json()).then(data => {
             this.setState({ listData: data.data })
-        }).catch(e => console.log('错误:', e))
+        }).catch(e => console.log('错误:', e));
     }
 
 
@@ -81,10 +81,10 @@ export default class UserList extends React.Component {
                 key: 'action',
                 render: (text, record, index) => {
                     let delData = () => {
-                        alert("调用删除")
+                        alert("删除个🔨")
                     }
                     let updateData = () => {
-                        alert("调用修改")
+                        alert("修改个🔨")
                     }
 
                     const menu = (

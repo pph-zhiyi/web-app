@@ -3,7 +3,7 @@ import { Layout, Menu, Icon, Alert } from 'antd';
 import '../App.css';
 import UserList from './user/UserList';
 import AntdTest from '../components/AntdTest';
-import { Link, Route, BrowserRouter } from 'react-router-dom';
+import { Link, Route, Redirect, Switch } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -12,11 +12,11 @@ export default class MyIndex extends React.Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <div>
                 <Layout style={{ minHeight: '100vh' }}>
-                    <Sider collapsible >
+                    <Sider collapsible>
                         <div className="logo" />
-                        <Menu theme="dark" defaultSelectedKeys={['userList']} mode="inline">
+                        <Menu theme="dark" defaultSelectedKeys={['userList']} defaultOpenKeys={['user']} mode="inline">
                             <Menu.Item key="index">
                                 <Link to="/" />
                                 <span style={{ fontSize: 20, marginLeft: 48 }}> 锤子 </span>
@@ -34,8 +34,8 @@ export default class MyIndex extends React.Component {
                                     </span>
                                 }
                             >
-                                <Menu.Item key="userList" > <Link to="/user/list" >用户管理列表 </Link></Menu.Item>
-                                <Menu.Item key="antdTest" >  <Link to="/antd/test" >ANTD test </Link> </Menu.Item>
+                                <Menu.Item key="userList" > <Link to="/my/index/user/list" >用户管理列表 </Link></Menu.Item>
+                                <Menu.Item key="antdTest" >  <Link to="/my/index/antd/test" >ANTD test </Link> </Menu.Item>
                                 <Menu.Item key="5"> Alex </Menu.Item>
                             </SubMenu>
                             <SubMenu
@@ -63,19 +63,22 @@ export default class MyIndex extends React.Component {
                                     message="玩个 🔨 啊"
                                     type="info"
                                     banner="true"
-                                     />
+                                />
                             </div>
                         </Header>
                         <Content style={{ margin: '0 16px' }}>
-                            <Route path="/user/list" component={UserList} />
-                            <Route path="/antd/test" component={AntdTest} />
+                            <Switch>
+                                <Route path="/my/index/user/list" component={UserList} />
+                                <Route path="/my/index/antd/test" component={AntdTest} />
+                                <Redirect from="/my/index/" to='/my/index/user/list' />
+                            </Switch>
                         </Content>
                         <Footer style={{ textAlign: 'center' }}>
                             PPH ©2019 Created by Zhiyi
                         </Footer>
                     </Layout>
                 </Layout>
-            </BrowserRouter>
+            </div>
         );
     }
 }

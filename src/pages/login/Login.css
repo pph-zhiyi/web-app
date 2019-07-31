@@ -1,0 +1,34 @@
+
+
+.lb-test{
+    background: red;
+    margin: 0 auto;
+}
+.login-form {
+    max-width: 300px;
+}
+ .login-form-forgot {
+    float: right;
+}
+.login-form-button {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+.external-div {
+    width: 100%;
+    height: 800px;
+    position: relative;
+    background-color: antiquewhite;
+    /* background:url('') no-repeat 4px 5px */
+}
+.internal-div {
+    position: absolute;
+    left: calc(50% - 190px);
+    top: calc(50% - 272px * 0.5);
+    background-color: ghostwhite;
+    padding: 53px;
+    border-radius: 15px;
+}
