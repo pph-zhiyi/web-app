@@ -1,7 +1,8 @@
 import React from 'react';
-import { Table, Menu, Popconfirm, Dropdown, Icon, Tag } from 'antd';
+import {Table, Menu, Popconfirm, Dropdown, Icon, Tag} from 'antd';
 import '../../App.css';
 import moment from "moment";
+import Edit from "./Edit";
 
 export default class UserList extends React.Component {
     constructor(props) {
@@ -17,10 +18,10 @@ export default class UserList extends React.Component {
             {
                 method: "POST",
                 body: JSON.stringify({}),
-                headers: { 'Content-Type': 'application/json;charset=utf-8' }
+                headers: {'Content-Type': 'application/json;charset=utf-8'}
             }
         ).then(res => res.json()).then(data => {
-            this.setState({ listData: data.data })
+            this.setState({listData: data.data})
         }).catch(e => console.log('错误:', e));
     }
 
@@ -83,15 +84,14 @@ export default class UserList extends React.Component {
                     let delData = () => {
                         alert("删除个🔨")
                     }
-                    let updateData = () => {
-                        alert("修改个🔨")
-                    }
 
                     const menu = (
                         <Menu>
                             <Menu.Item>
-                                <span onClick={updateData}>
-                                    <b> 编辑用户 </b>
+                                <span>
+                                    <Edit
+                                        data={record}
+                                    />
                                 </span>
                             </Menu.Item>
                             <Menu.Item>
@@ -99,7 +99,8 @@ export default class UserList extends React.Component {
                                     title="确定删除吗？"
                                     onConfirm={delData}
                                 >
-                                    <span> 
+                                    <span>
+                                        <Icon type="delete"/>
                                        <b> 删除用户 </b> 
                                     </span>
                                 </Popconfirm>
@@ -109,7 +110,7 @@ export default class UserList extends React.Component {
                     return (
                         <Dropdown
                             overlay={menu}>
-                            <span> Open <Icon type="down" /> </span>
+                            <span> Open <Icon type="down"/> </span>
                         </Dropdown>
                     );
                 },

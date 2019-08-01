@@ -7,7 +7,8 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            listData: []
+            listData: [],
+            isRegister: false
         }
     }
 
@@ -77,6 +78,9 @@ class Login extends React.Component {
                                     <a className="login-form-forgot" href="/"> Forgot password </a>
                                     <Button type="primary" htmlType="submit" className="login-form-button">
                                         Log in
+                                    </Button>
+                                    <Button className="login-form-button">
+                                        Register
                                     </Button> Or <a href="/"> register now! </a>
                                 </Form.Item>
                             </Form>
