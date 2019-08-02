@@ -1,8 +1,10 @@
 import React from 'react';
-import {Table, Menu, Popconfirm, Dropdown, Icon, Tag} from 'antd';
+import {Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip} from 'antd';
 import '../../App.css';
 import moment from "moment";
 import Edit from "./Edit";
+
+const {Search} = Input;
 
 export default class UserList extends React.Component {
     constructor(props) {
@@ -50,6 +52,14 @@ export default class UserList extends React.Component {
                 }
             },
             {
+                title: '生日',
+                dataIndex: 'birthday',
+                key: 'birthday',
+                render: (text, record) => {
+                    return (<span>{moment(text).format('YYYY-MM-DD')}</span>);
+                }
+            },
+            {
                 title: 'Age',
                 dataIndex: 'age',
                 key: 'age',
@@ -62,17 +72,38 @@ export default class UserList extends React.Component {
                 },
             },
             {
+                title: '地址',
+                dataIndex: 'address',
+                key: 'address'
+            },
+            {
+                title: '描述',
+                dataIndex: 'description',
+                key: 'description',
+                render: (text, record) => {
+                    let str = text;
+                    if (text && text.length > 10) {
+                        str = text.substring(0, 5).concat('...');
+                    }
+                    return (
+                        <Tooltip placement="top" title={text}>
+                            <span> {str} </span>
+                        </Tooltip>
+                    );
+                }
+            },
+            {
                 title: '创建时间',
-                dataIndex: 'gmt_create',
-                key: 'gmt_create',
+                dataIndex: 'gmtCreate',
+                key: 'gmtCreate',
                 render: (text, record) => {
                     return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
                 }
             },
             {
                 title: '修改时间',
-                dataIndex: 'gmt_modify',
-                key: 'gmt_modify',
+                dataIndex: 'gmtModify',
+                key: 'gmtModify',
                 render: (text, record) => {
                     return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
                 }
@@ -120,11 +151,35 @@ export default class UserList extends React.Component {
         return (
             <div className="ant-table-warpper">
                 <div>
+                    <div>
+                        <Row>
+                            <Col span={6}>
+                                <Search
+                                    className={'topLeftBtn'}
+                                    placeholder="请输入用户名"
+                                    onSearch={value => console.log(value)}
+                                    enterButton/>
+                            </Col>
+                            <Col span={6} offset={12}>
+                                <Button
+                                    className={'topRightBtn'}
+                                    icon={"plus"}
+                                    onClick={this.onSubmit}
+                                    type="primary"
+                                >
+                                    新增用户
+                                </Button>
+                            </Col>
+                        </Row>
+                    </div>
                     <Table
                         className="components-table-demo-nested"
                         columns={columns}
                         dataSource={this.state.listData}
                         rowKey={record => record.id}
+                        pagination={this.state.pagination}
+                        loading={this.state.loading}
+                        onChange={this.handleTableChange}
                     />
                 </div>
             </div>

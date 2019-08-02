@@ -3,7 +3,6 @@ import {Drawer, Form, Button, Input, Select, Icon} from 'antd';
 import CallUtils from '../../utils/CallUtils';
 
 const {Option} = Select;
-console.log(CallUtils);
 
 class Edit extends React.Component {
     constructor(props) {
@@ -29,12 +28,10 @@ class Edit extends React.Component {
     onSubmit = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values)
                 let d1 = CallUtils.doPost("user/query", {});
                 d1.then(res => {
                     console.log("1111111", res)
                 })
-                console.log("then", d1)
             }
         })
     };

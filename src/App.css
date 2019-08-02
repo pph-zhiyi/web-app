@@ -38,3 +38,15 @@
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
 }
+
+.topRightBtn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: right;
+}
+
+.topLeftBtn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+}
