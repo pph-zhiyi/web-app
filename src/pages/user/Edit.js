@@ -25,6 +25,11 @@ class Edit extends React.Component {
         });
     };
 
+    onReset = () => {
+        const {resetFields} = this.props.form;
+        resetFields();
+    };
+
     onSubmit = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -118,10 +123,10 @@ class Edit extends React.Component {
                     >
                         <Button
                             icon={"close"}
-                            onClick={this.onClose}
+                            onClick={this.onReset}
                             style={{marginRight: 8}}
                         >
-                            取消
+                            复原
                         </Button>
                         <Button
                             icon={"check"}

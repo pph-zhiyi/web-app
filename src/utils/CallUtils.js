@@ -6,10 +6,10 @@ export default class CallUtils extends React.Component {
      * doGet
      *
      * @param action
-     * @param obj
+     * @param val
      * @returns {Promise<any>}
      */
-    static async doGet(action, obj) {
+    static async doGet(action, val) {
 
     }
 
@@ -17,10 +17,10 @@ export default class CallUtils extends React.Component {
      * doPost
      *
      * @param action
-     * @param obj
+     * @param val
      * @returns {Promise<any>}
      */
-    static async doPost(action, obj) {
+    static async doPost(action, val) {
         if (action.substring(0, 1) !== "/") {
             "/".concat(action)
         }
@@ -29,7 +29,7 @@ export default class CallUtils extends React.Component {
             'http://localhost:8888/' + action,
             {
                 method: "POST",
-                body: JSON.stringify(obj),
+                body: JSON.stringify(val),
                 headers: {'Content-Type': 'application/json;charset=utf-8'}
             }
         ).then(res => res.json());
