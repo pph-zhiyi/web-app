@@ -1,5 +1,20 @@
 import React from 'react';
-import {Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal} from 'antd';
+import {
+    Table,
+    Menu,
+    Popconfirm,
+    Dropdown,
+    Icon,
+    Tag,
+    Button,
+    Input,
+    Row,
+    Col,
+    Tooltip,
+    Pagination,
+    Modal,
+    message
+} from 'antd';
 import '../../App.css';
 import moment from "moment";
 import Edit from "./Edit";
@@ -17,7 +32,7 @@ export default class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            obj: [],
+            obj: {},
             addVisible: false
         }
     }
@@ -39,7 +54,11 @@ export default class UserList extends React.Component {
         // }).catch(e => console.log('错误:', e));
 
         CallUtils.doPost('/user/query', defPage).then(data => {
-            this.setState({obj: data})
+            if (data['code'] === 200) {
+                this.setState({obj: data['data']})
+            } else {
+                message.error(data['message']);
+            }
         });
 
     };
@@ -79,6 +98,14 @@ export default class UserList extends React.Component {
     render() {
         const columns = [
             {
+                title: 'User',
+                dataIndex: 'user',
+                key: 'user',
+                render: (text, record) => {
+                    return (<span>{text}</span>);
+                },
+            },
+            {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
@@ -112,11 +139,9 @@ export default class UserList extends React.Component {
                 dataIndex: 'age',
                 key: 'age',
                 render: (text, record) => {
-                    if (text) {
-                        return (<span> {text} </span>);
-                    } else {
-                        return (<Tag color="gray" key={text}> 暂无 </Tag>);
-                    }
+                    let now = moment(new Date()).format('YYYY');
+                    let birthday = moment(new Date(record['birthday'])).format('YYYY');
+                    return (<span>{now - birthday}</span>);
                 },
             },
             {

@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default class CallUtils extends React.Component {
-
     /**
      * doGet
      *
@@ -10,7 +9,6 @@ export default class CallUtils extends React.Component {
      * @returns {Promise<any>}
      */
     static async doGet(action, val) {
-
     }
 
     /**
@@ -21,11 +19,11 @@ export default class CallUtils extends React.Component {
      * @returns {Promise<any>}
      */
     static async doPost(action, val) {
-        if (action.substring(0, 1) !== "/") {
+        if (!action.startsWith("/")) {
             "/".concat(action)
         }
 
-        const res = await fetch(
+        return await fetch(
             'http://localhost:8888/' + action,
             {
                 method: "POST",
@@ -33,7 +31,5 @@ export default class CallUtils extends React.Component {
                 headers: {'Content-Type': 'application/json;charset=utf-8'}
             }
         ).then(res => res.json());
-
-        return res;
     }
 }
