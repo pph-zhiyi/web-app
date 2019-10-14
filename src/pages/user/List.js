@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import Edit from "./Edit";
 import Add from "./Add";
-import '../../App.css';
+import '../../index.css';
 import moment from "moment";
 
 let defPage = {
@@ -29,7 +29,6 @@ class List extends Component {
     render() {
         const {queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule} = this.props;
         let {obj, loading, addVisible} = this.props;
-        console.log('xxx', addVisible)
 
         const columns = [
             {

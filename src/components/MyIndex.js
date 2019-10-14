@@ -1,8 +1,8 @@
 import React from 'react';
 import {Layout, Menu, Icon, Alert} from 'antd';
-import '../App.css';
-import User from './user/User';
-import AntdTest from '../components/AntdTest';
+import '../index.css';
+import User from '../components/user/User';
+import AntdTest from './demo/AntdTest';
 import {Link, Route, Redirect, Switch} from 'react-router-dom';
 
 const {Header, Content, Footer, Sider} = Layout;

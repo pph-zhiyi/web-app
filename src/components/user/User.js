@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import List from './List';
+import List from '../../pages/user/List';
 import {
     USER_QUERY_LIST,
     USER_SHOW_ADD_MODEL,
