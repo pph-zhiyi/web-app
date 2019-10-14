@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 import Login from '../pages/login/Login';
 import SiderIndex from '../pages/SiderIndex';
-import MyIndex from '../pages/myIndex';
+import MyIndex from '../pages/My\bIndex';
 
 const AppRouter = () => {
     return (

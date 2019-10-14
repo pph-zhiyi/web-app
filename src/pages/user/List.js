@@ -1,101 +1,36 @@
-import React from 'react';
+import React, {Component} from 'react';
+import 'antd/dist/antd.css';
 import {
-    Table,
-    Menu,
-    Popconfirm,
-    Dropdown,
-    Icon,
-    Tag,
-    Button,
-    Input,
-    Row,
-    Col,
-    Tooltip,
-    Pagination,
-    Modal,
-    message
+    Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal
 } from 'antd';
-import '../../App.css';
-import moment from "moment";
 import Edit from "./Edit";
 import Add from "./Add";
-import CallUtils from "../../utils/CallUtils";
+import '../../App.css';
+import moment from "moment";
 
-const {Search} = Input;
 let defPage = {
     'pageNo': 1,
     'pageSize': 13,
     'name': null
-}
+};
 
-export default class UserList extends React.Component {
+const {Search} = Input;
+
+class List extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            obj: {},
-            addVisible: false
-        }
+        this.state = {};
     }
 
     componentDidMount() {
-        this.getObj();
+        this.props.queryList(defPage);
     }
 
-    getObj = () => {
-        // fetch(
-        //     'http://localhost:8888/user/query',
-        //     {
-        //         method: "POST",
-        //         body: JSON.stringify(defPage),
-        //         headers: {'Content-Type': 'application/json;charset=utf-8'}
-        //     }
-        // ).then(res => res.json()).then(data => {
-        //     this.setState({obj: data})
-        // }).catch(e => console.log('错误:', e));
-
-        CallUtils.doPost('/user/query', defPage).then(data => {
-            if (data['code'] === 200) {
-                this.setState({obj: data['data']})
-            } else {
-                message.error(data['message']);
-            }
-        });
-
-    };
-
-    // getObj = async () => {
-    //     return await CallUtils.doPost('/user/query', defPage);
-    // };
-
-    onPageChangeHandler = (pageNo, pageSize) => {
-        defPage = {
-            'pageNo': pageNo,
-            'pageSize': pageSize
-        };
-        this.getObj();
-    };
-
-    onShowSizeChange = (pageNo, pageSize) => {
-        defPage = {
-            'pageNo': pageNo,
-            'pageSize': pageSize
-        };
-        this.getObj();
-    };
-
-    showAddModule = () => {
-        this.setState({
-            addVisible: true
-        })
-    };
-
-    hideAddModule = () => {
-        this.setState({
-            addVisible: false
-        })
-    };
-
     render() {
+        const {queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule} = this.props;
+        let {obj, loading, addVisible} = this.props;
+        console.log('xxx', addVisible)
+
         const columns = [
             {
                 title: 'User',
@@ -205,7 +140,7 @@ export default class UserList extends React.Component {
                                 >
                                     <span>
                                         <Icon type="delete"/>
-                                       <b> 删除用户 </b> 
+                                       <b> 删除用户 </b>
                                     </span>
                                 </Popconfirm>
                             </Menu.Item>
@@ -237,7 +172,7 @@ export default class UserList extends React.Component {
                                 <Button
                                     className={'topRightBtn'}
                                     icon={"plus"}
-                                    onClick={this.showAddModule}
+                                    onClick={showAddModule}
                                     type="primary"
                                 >
                                     新增用户
@@ -248,40 +183,42 @@ export default class UserList extends React.Component {
                     <Table
                         className="components-table-demo-nested"
                         columns={columns}
-                        dataSource={this.state.obj.data}
+                        dataSource={obj.data}
                         rowKey={record => record.id}
                         // pagination={this.state.pagination}
                         pagination={false}
-                        loading={this.state.loading}
+                        loading={loading}
                         // onChange={this.handleTableChange}
                     />
                     <div>
                         <Pagination
                             className='ant-pagination ant-table-pagination'
-                            total={this.state.obj.total}
+                            total={obj.total}
                             showTotal={total => `共 ${total} 项`}
-                            current={this.state.obj.pageNo}
-                            onChange={this.onPageChangeHandler}
-                            onShowSizeChange={this.onShowSizeChange}
+                            current={obj.pageNo}
+                            onChange={onPageChangeHandler}
+                            onShowSizeChange={onShowSizeChange}
                             showSizeChanger
                             showQuickJumper
                         />
                     </div>
                 </div>
                 <Modal
-                    visible={this.state.addVisible}
+                    visible={addVisible}
                     title="新增用户"
                     okText={'提交'}
                     cancelText={'取消'}
-                    onCancel={this.hideAddModule}
+                    onCancel={hideAddModule}
                     footer={null}
                 >
                     <Add
-                        hideAddModule={this.hideAddModule}
-                        getObj={this.getObj}
+                        hideAddModule={hideAddModule}
+                        getObj={queryList}
                     />
                 </Modal>
             </div>
         );
     }
 }
+
+export default List;

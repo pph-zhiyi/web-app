@@ -1,7 +1,7 @@
 import React from 'react';
 import {Layout, Menu, Icon, Alert} from 'antd';
 import '../App.css';
-import UserList from './user/UserList';
+import User from './user/User';
 import AntdTest from '../components/AntdTest';
 import {Link, Route, Redirect, Switch} from 'react-router-dom';
 
@@ -70,7 +70,7 @@ export default class MyIndex extends React.Component {
                         </Header>
                         <Content style={{margin: '0 16px'}}>
                             <Switch>
-                                <Route path="/my/index/user/list" component={UserList}/>
+                                <Route path="/my/index/user/list" component={User}/>
                                 <Route path="/my/index/antd/test" component={AntdTest}/>
                                 <Redirect from="/my/index/" to='/my/index/user/list'/>
                             </Switch>
