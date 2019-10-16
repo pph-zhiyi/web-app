@@ -8,12 +8,6 @@ import Add from "./Add";
 import '../../index.css';
 import moment from "moment";
 
-let defPage = {
-    'pageNo': 1,
-    'pageSize': 13,
-    'name': null
-};
-
 const {Search} = Input;
 
 class List extends Component {
@@ -23,16 +17,19 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.props.queryList(defPage);
+        this.props.queryList(this.props.queryParams);
     }
 
     render() {
-        const {queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule} = this.props;
-        let {obj, loading, addVisible} = this.props;
+        const {
+            queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule,
+            addUser, editUser, deleteUser
+        } = this.props;
+        let {obj, loading, addVisible, queryParams, changeName} = this.props;
 
         let queryUserList = (name) => {
-            defPage.name = name
-            queryList(defPage);
+            changeName(name);
+            queryList(queryParams);
         };
 
         const columns = [
@@ -125,8 +122,9 @@ class List extends Component {
                 key: 'action',
                 render: (text, record, index) => {
                     let delData = () => {
-                        alert("删除个🔨")
-                    }
+                        alert("删除个🔨 --- ".concat( record.id))
+                        // deleteUser(record.id);
+                    };
 
                     const menu = (
                         <Menu>
@@ -134,6 +132,7 @@ class List extends Component {
                                 <span>
                                     <Edit
                                         data={record}
+                                        editUser={editUser}
                                     />
                                 </span>
                             </Menu.Item>
@@ -219,6 +218,7 @@ class List extends Component {
                 >
                     <Add
                         hideAddModule={hideAddModule}
+                        addUser={addUser}
                         getObj={queryList}
                     />
                 </Modal>

@@ -11,33 +11,49 @@ import {
 } from '../../store/actionTypes';
 import * as userService from '../../services/userService';
 
-let defPage = {
-    'pageNo': 1,
-    'pageSize': 13,
-    'name': null
-};
+let globalQueryParams;
 
 class User extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            queryParams: {
+                pageNo: 1,
+                pageSize: 13,
+                name: null
+            }
+        };
+    }
+
+    changeName = (name) => {
+        let params = this.state.queryParams;
+        params.name = name;
+        this.setState({
+            queryParams: params
+        })
+    };
 
     render() {
         const {
-            queryList, onPageChangeHandler, onShowSizeChange, addItem, editItem,
-            deleteItem, showAddModule, hideAddModule
+            queryList, onPageChangeHandler, onShowSizeChange, addUser, editUser,
+            deleteUser, showAddModule, hideAddModule
         } = this.props;
-        let {token, obj, addVisible, loading} = this.props;
+        let {obj, addVisible, loading} = this.props;
+        globalQueryParams = this.state.queryParams;
 
         return (
             <List
-                token={token}
+                queryParams={this.state.queryParams}
+                changeName={this.changeName}
                 obj={obj}
                 addVisible={addVisible}
                 loading={loading}
                 queryList={queryList}
                 onPageChangeHandler={onPageChangeHandler}
                 onShowSizeChange={onShowSizeChange}
-                addItem={addItem}
-                editItem={editItem}
-                deleteItem={deleteItem}
+                addUser={addUser}
+                editUser={editUser}
+                deleteUser={deleteUser}
                 showAddModule={showAddModule}
                 hideAddModule={hideAddModule}
             />
@@ -66,18 +82,26 @@ const dispatchToProps = (dispatch) => {
             });
         },
         onPageChangeHandler(pageNo, pageSize) {
-            defPage = {
-                'pageNo': pageNo,
-                'pageSize': pageSize
-            };
-            this.queryList(defPage);
+            globalQueryParams.pageNo = pageNo;
+            globalQueryParams.pageSize = pageSize;
+            userService.queryUserList(globalQueryParams).then(res => {
+                let action = {
+                    type: USER_QUERY_LIST,
+                    obj: res.data
+                };
+                dispatch(action);
+            });
         },
         onShowSizeChange(pageNo, pageSize) {
-            defPage = {
-                'pageNo': pageNo,
-                'pageSize': pageSize
-            };
-            this.queryList(defPage);
+            globalQueryParams.pageNo = pageNo;
+            globalQueryParams.pageSize = pageSize;
+            userService.queryUserList(globalQueryParams).then(res => {
+                let action = {
+                    type: USER_QUERY_LIST,
+                    obj: res.data
+                };
+                dispatch(action);
+            });
         },
         showAddModule() {
             let action = {
@@ -93,21 +117,21 @@ const dispatchToProps = (dispatch) => {
             };
             dispatch(action);
         },
-        addItem(params) {
+        addUser(params) {
             let action = {
                 type: USER_ADD_INFO,
                 params
             };
             dispatch(action);
         },
-        editItem(params) {
+        editUser(params) {
             let action = {
                 type: USER_EDIT_INFO,
                 params
             };
             dispatch(action);
         },
-        deleteItem(index) {
+        deleteUser(index) {
             let action = {
                 type: USER_DELETE_INFO,
                 index

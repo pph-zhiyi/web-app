@@ -21,7 +21,18 @@ class LoginForm extends React.Component {
         return (
             <div className='external-div'>
                 <div className='internal-div'>
-                    <Row align='middle' justify='center' type='flex'>
+                    <Row
+                        align='middle'
+                        justify='center'
+                        type='flex'
+                    >
+                        <h1 style={{color: '#CC6600'}}> 有空一起玩锤子 </h1>
+                    </Row>
+                    <Row
+                        align='middle'
+                        justify='center'
+                        type='flex'
+                    >
                         <Col>
                             <Form onSubmit={this.loginSubmit} className="login-form">
                                 <Form.Item>

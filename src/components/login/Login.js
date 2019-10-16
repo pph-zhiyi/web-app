@@ -8,10 +8,10 @@ import LoginInform from "../../pages/login/LoginInform";
 
 class Login extends Component {
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps, nextContext) {
         const {isExists, user, msg} = nextProps;
         if (isExists) {
-            message.info(<span> 你好:【 <b style={{color: '#1890ff'}}>{user.jti}</b> 】, {msg}</span>);
+            message.success(<span> 你好 <b style={{color: '#1890ff'}}>{user.jti}</b> {msg} </span>);
             this.props.history.push('/app')
         }
     }

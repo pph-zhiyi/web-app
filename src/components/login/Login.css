@@ -37,7 +37,8 @@
     text-align: center;
     height: 160px;
     line-height: 200px;
-    background: #FF9966;
+    /*background: #FF9966;*/
+    background: #7CBF;
     overflow: hidden;
 }
 
