@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {message} from 'antd';
+import loginStateCheck from "./loginStateCheck";
 
 let api = axios.create({
     timeout: 1000 * 6,
@@ -13,9 +14,19 @@ export const DEFAULT_REQUEST_CONFIGS = {
     }
 };
 
+export function getRequestConf(token) {
+    return {
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            token: token
+        }
+    };
+}
+
 api.interceptors.response.use(
     function (response) {
         // console.log('api response', response);
+        loginStateCheck();
         const result = response.data;
         if (result.code === 401) {
             // TODO 跳转登录
@@ -29,15 +40,16 @@ api.interceptors.response.use(
         }
     },
     function (error) {
+        loginStateCheck();
         // console.log("api error", error);
-        const code = error.response.code;
-        if (code === 401) {
-            //    TODO 跳转登录
-        } else if (code === 500) {
-            message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
-        } else {
-            message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
-        }
+        // const code = error.response.code;
+        // if (code === 401) {
+        //     //    TODO 跳转登录
+        // } else if (code === 500) {
+        //     message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
+        // } else {
+        //     message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
+        // }
         return Promise.reject(error);
     }
 );

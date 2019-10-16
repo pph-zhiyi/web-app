@@ -24,10 +24,11 @@ class User extends React.Component {
             queryList, onPageChangeHandler, onShowSizeChange, addItem, editItem,
             deleteItem, showAddModule, hideAddModule
         } = this.props;
-        let {obj, addVisible, loading} = this.props;
+        let {token, obj, addVisible, loading} = this.props;
 
         return (
             <List
+                token={token}
                 obj={obj}
                 addVisible={addVisible}
                 loading={loading}
@@ -44,8 +45,8 @@ class User extends React.Component {
     }
 }
 
-const stateToProps = (state) => {
-    state = state.user;
+const mapStateToProps = (initState) => {
+    let state = initState.user;
     return {
         obj: state.obj,
         addVisible: state.addVisible,
@@ -116,4 +117,4 @@ const dispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(stateToProps, dispatchToProps)(User);
+export default connect(mapStateToProps, dispatchToProps)(User);

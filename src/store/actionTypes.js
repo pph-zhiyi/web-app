@@ -1,6 +1,7 @@
-export const INPUT_VALUE = 'inputValue';
-export const DELETE_ITEM = 'deleteItem';
-export const ADD_ITEM = 'addItem';
+export const LOGIN = 'login';
+export const GET_ERRORS = 'get_errors';
+export const SET_CURRENT_USER = 'set_current_user';
+export const LOG_OUT_USER = 'log_out_user';
 
 export const USER_QUERY_LIST = 'user_query_list';
 export const USER_SHOW_ADD_MODEL = 'user_show_add_model';

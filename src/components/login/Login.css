@@ -1,5 +1,3 @@
-
-
 .lb-test{
     background: red;
     margin: 0 auto;
@@ -19,16 +17,30 @@
 }
 .external-div {
     width: 100%;
-    height: 800px;
+    height: 763px;
     position: relative;
     background-color: antiquewhite;
     /* background:url('') no-repeat 4px 5px */
 }
 .internal-div {
     position: absolute;
-    left: calc(50% - 190px);
-    top: calc(50% - 272px * 0.5);
+    left: calc(50% - 200px);
+    /*top: calc(50% - 272px * 0.5);*/
+    top: calc(20%);
     background-color: ghostwhite;
     padding: 53px;
     border-radius: 15px;
+}
+
+/* For demo */
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 160px;
+    line-height: 200px;
+    background: #FF9966;
+    overflow: hidden;
+}
+
+.ant-carousel .slick-slide h3 {
+    color: #fff;
 }

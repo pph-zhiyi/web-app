@@ -34,8 +34,8 @@ export default class MyIndex extends React.Component {
                                     </span>
                                 }
                             >
-                                <Menu.Item key="userList"> <Link to="/my/index/user/list">用户管理列表 </Link></Menu.Item>
-                                <Menu.Item key="antdTest"> <Link to="/my/index/antd/test">ANTD test </Link> </Menu.Item>
+                                <Menu.Item key="userList"> <Link to="/app/user/list"> 用户管理列表 </Link></Menu.Item>
+                                <Menu.Item key="antdTest"> <Link to="/app/antd/test"> ANTD test </Link> </Menu.Item>
                                 <Menu.Item key="5"> Alex </Menu.Item>
                             </SubMenu>
                             <SubMenu
@@ -70,9 +70,9 @@ export default class MyIndex extends React.Component {
                         </Header>
                         <Content style={{margin: '0 16px'}}>
                             <Switch>
-                                <Route path="/my/index/user/list" component={User}/>
-                                <Route path="/my/index/antd/test" component={AntdTest}/>
-                                <Redirect from="/my/index/" to='/my/index/user/list'/>
+                                <Route path="/app/user/list" component={User}/>
+                                <Route path="/app/antd/test" component={AntdTest}/>
+                                <Redirect from="/app" to='/app/user/list'/>
                             </Switch>
                         </Content>
                         <Footer style={{textAlign: 'center'}}>

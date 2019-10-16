@@ -30,6 +30,11 @@ class List extends Component {
         const {queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule} = this.props;
         let {obj, loading, addVisible} = this.props;
 
+        let queryUserList = (name) => {
+            defPage.name = name
+            queryList(defPage);
+        };
+
         const columns = [
             {
                 title: 'User',
@@ -164,7 +169,9 @@ class List extends Component {
                                 <Search
                                     className={'topLeftBtn'}
                                     placeholder="请输入用户名"
-                                    onSearch={value => console.log(value)}
+                                    onSearch={(value) => {
+                                        queryUserList(value)
+                                    }}
                                     enterButton/>
                             </Col>
                             <Col span={6} offset={12}>
