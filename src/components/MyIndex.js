@@ -14,12 +14,20 @@ export default class MyIndex extends React.Component {
         return (
             <div>
                 <Layout style={{minHeight: '100vh'}}>
-                    <Sider collapsible>
+                    <Sider
+                        collapsible
+                        theme="light"
+                        width="300"
+                    >
                         <div className="logo"/>
-                        <Menu theme="dark" defaultSelectedKeys={['userList']} defaultOpenKeys={['user']} mode="inline">
+                        <Menu theme="light"
+                              defaultSelectedKeys={['userList']}
+                              defaultOpenKeys={['user']}
+                              mode="inline"
+                        >
                             <Menu.Item key="index">
                                 <Link to="/"/>
-                                <span style={{fontSize: 20, marginLeft: 48}}> 锤子 </span>
+                                <h3 style={{fontSize: 25, "textAlign": "center"}}> 锤子哦 </h3>
                             </Menu.Item>
                             <Menu.Item key="1">
                                 <Icon type="desktop"/>

@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import {
-    Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal
+    Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal, message
 } from 'antd';
 import Edit from "./Edit";
 import Add from "./Add";
 import '../../index.css';
 import moment from "moment";
+import {deleteUser} from '../../services/userService';
 
 const {Search} = Input;
 
@@ -22,8 +23,7 @@ class List extends Component {
 
     render() {
         const {
-            queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule,
-            addUser, editUser, deleteUser
+            queryList, onPageChangeHandler, onShowSizeChange, hideAddModule, showAddModule
         } = this.props;
         let {obj, loading, addVisible, queryParams, changeName} = this.props;
 
@@ -34,7 +34,7 @@ class List extends Component {
 
         const columns = [
             {
-                title: 'User',
+                title: '用户名',
                 dataIndex: 'user',
                 key: 'user',
                 render: (text, record) => {
@@ -42,7 +42,7 @@ class List extends Component {
                 },
             },
             {
-                title: 'Name',
+                title: '姓名',
                 dataIndex: 'name',
                 key: 'name',
                 render: (text, record) => {
@@ -50,7 +50,7 @@ class List extends Component {
                 },
             },
             {
-                title: 'Sex',
+                title: '性别',
                 key: 'sex',
                 dataIndex: 'sex',
                 render: (text, record) => {
@@ -71,7 +71,7 @@ class List extends Component {
                 }
             },
             {
-                title: 'Age',
+                title: '年龄',
                 dataIndex: 'age',
                 key: 'age',
                 render: (text, record) => {
@@ -121,9 +121,15 @@ class List extends Component {
                 title: '操作',
                 key: 'action',
                 render: (text, record, index) => {
-                    let delData = () => {
-                        alert("删除个🔨 --- ".concat( record.id))
-                        // deleteUser(record.id);
+                    let delUser = () => {
+                        deleteUser({id: record.id}).then(res => {
+                            if (res.success) {
+                                message.success('删除用户成功');
+                                queryList && queryList({});
+                            } else {
+                                message.error(res.message);
+                            }
+                        });
                     };
 
                     const menu = (
@@ -132,14 +138,14 @@ class List extends Component {
                                 <span>
                                     <Edit
                                         data={record}
-                                        editUser={editUser}
+                                        queryList={queryList}
                                     />
                                 </span>
                             </Menu.Item>
                             <Menu.Item>
                                 <Popconfirm
                                     title="确定删除吗？"
-                                    onConfirm={delData}
+                                    onConfirm={delUser}
                                 >
                                     <span>
                                         <Icon type="delete"/>
@@ -218,8 +224,7 @@ class List extends Component {
                 >
                     <Add
                         hideAddModule={hideAddModule}
-                        addUser={addUser}
-                        getObj={queryList}
+                        queryList={queryList}
                     />
                 </Modal>
             </div>

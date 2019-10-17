@@ -1,14 +1,15 @@
 import React from 'react';
-import {Drawer, Form, Button, Input, Select, Icon} from 'antd';
-import CallUtils from '../../utils/CallUtils';
+import {Drawer, Form, Button, Input, Select, Icon, DatePicker, message} from 'antd';
+import moment from 'moment';
+import {editUser} from '../../services/userService';
 
 const {Option} = Select;
+const {TextArea} = Input;
 
 class Edit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            listData: [],
             visible: false
         };
     }
@@ -19,24 +20,25 @@ class Edit extends React.Component {
         });
     };
 
-    onClose = () => {
+    hiddenDrawer = () => {
         this.setState({
             visible: false,
         });
     };
 
-    onReset = () => {
-        const {resetFields} = this.props.form;
-        resetFields();
-    };
-
     onSubmit = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let d1 = CallUtils.doPost("user/query", {});
-                d1.then(res => {
-                    console.log("1111111", res)
-                })
+                editUser(values).then(res => {
+                    if (res.success) {
+                        const {queryList} = this.props;
+                        message.success('编辑用户成功');
+                        queryList && queryList({});
+                        this.hiddenDrawer();
+                    } else {
+                        message.error(res.message);
+                    }
+                });
             }
         })
     };
@@ -57,30 +59,48 @@ class Edit extends React.Component {
                 <Drawer
                     title="用户信息编辑"
                     width={720}
-                    onClose={this.onClose}
+                    onClose={this.hiddenDrawer}
                     visible={this.state.visible}
                 >
                     <Form layout="vertical" hideRequiredMark>
-                        <Form.Item {...formItemLayout} label="Id:">
+                        <Form.Item {...formItemLayout} label="">
                             {
                                 getFieldDecorator('id',
                                     {
                                         initialValue: data['id']
                                     }
+                                )(<Input hidden/>)
+                            }
+                        </Form.Item>
+                        <Form.Item {...formItemLayout} label="用户名:">
+                            {
+                                getFieldDecorator('user', {
+                                        rules: [{required: true, message: '请输入用户名！'}],
+                                        initialValue: data['user']
+                                    }
                                 )(<Input disabled/>)
                             }
                         </Form.Item>
-                        <Form.Item {...formItemLayout} label="Name:">
+                        <Form.Item {...formItemLayout} label="密码:">
+                            {
+                                getFieldDecorator('password', {
+                                        rules: [{required: true, message: '请输入密码！'}],
+                                        initialValue: data['password']
+                                    }
+                                )(<Input type="password" placeholder="Please enter password"/>)
+                            }
+                        </Form.Item>
+                        <Form.Item {...formItemLayout} label="姓名:">
                             {
                                 getFieldDecorator('name',
                                     {
                                         initialValue: data['name'],
-                                        rules: [{required: true, message: '请输入用户名！'}],
+                                        rules: [{required: true, message: '请输入姓名！'}],
                                     }
-                                )(<Input placeholder="Please enter user name"/>)
+                                )(<Input placeholder="Please enter name"/>)
                             }
                         </Form.Item>
-                        <Form.Item {...formItemLayout} label="Sex:">
+                        <Form.Item {...formItemLayout} label="性别:">
                             {
                                 getFieldDecorator('sex',
                                     {
@@ -95,17 +115,34 @@ class Edit extends React.Component {
                                 )
                             }
                         </Form.Item>
-                        <Form.Item {...formItemLayout} label="Age:">
+                        <Form.Item {...formItemLayout} label="生日:">
                             {
-                                getFieldDecorator('age',
-                                    {
-                                        initialValue: data['age'],
-                                        rules: [
-                                            {required: true, message: '请输入年龄！'},
-                                            {pattern: new RegExp(/^[1-8]{1}[0-9]{1}$/, "g"), message: '请输入有效年龄'}
-                                        ],
+                                getFieldDecorator('birthday', {
+                                        rules: [{required: true, message: '请选择生日！'}],
+                                        initialValue: moment(data['birthday'])
                                     }
-                                )(<Input placeholder="Please enter user age"/>)
+                                )(<DatePicker
+                                    style={{width: '100%'}}
+                                    placeholder="Please select an birthday"
+                                />)
+                            }
+                        </Form.Item>
+                        <Form.Item {...formItemLayout} label="地址:">
+                            {
+                                getFieldDecorator('address', {
+                                        rules: [{required: true, message: '请输入地址！'}],
+                                        initialValue: data['address']
+                                    }
+                                )(<Input placeholder="Please enter user address"/>)
+                            }
+                        </Form.Item>
+                        <Form.Item {...formItemLayout} label="描述:">
+                            {
+                                getFieldDecorator('description', {
+                                        rules: [{required: true, message: '请输入描述！'}],
+                                        initialValue: data['description']
+                                    }
+                                )(<TextArea rows={3} placeholder="Please enter user description"/>)
                             }
                         </Form.Item>
                     </Form>
@@ -122,14 +159,14 @@ class Edit extends React.Component {
                         }}
                     >
                         <Button
-                            icon={"close"}
-                            onClick={this.onReset}
+                            icon="undo"
+                            onClick={() => this.props.form.resetFields()}
                             style={{marginRight: 8}}
                         >
-                            复原
+                            撤回
                         </Button>
                         <Button
-                            icon={"check"}
+                            icon="check"
                             onClick={this.onSubmit}
                             type="primary"
                         >

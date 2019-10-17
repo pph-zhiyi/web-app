@@ -18,6 +18,7 @@ const loginStateCheck = () => {
             store.dispatch(logoutUser);
             if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
                 countDown(5, true);
+                localStorage.removeItem('token')
             }
         }
     } else {

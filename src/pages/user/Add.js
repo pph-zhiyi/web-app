@@ -1,6 +1,6 @@
 import React from "react";
 import {Form, Input, Select, DatePicker, Button, message} from 'antd';
-import CallUtils from "../../utils/CallUtils";
+import {addUser} from '../../services/userService';
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -8,37 +8,23 @@ const {TextArea} = Input;
 class Add extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            listData: []
-        };
+        this.state = {};
     }
-
-    onReset = () => {
-        const {resetFields} = this.props.form;
-        resetFields();
-    };
 
     onOK = () => {
         this.props.form.validateFields((err, values) => {
-            // values['birthday'] = values['birthday'] * 1;
-            // let val = {
-            //     'name': values['name'],
-            //     'birthday': new Date(values['birthday']),
-            //     'sex': values['sex'],
-            //     'age': values['age'],
-            //     'address': values['address'],
-            //     'description': values['description']
-            // };
-            CallUtils.doPost("/user/create", values).then(result => {
-                if (result['success']) {
-                    const {hideAddModule, getObj} = this.props;
-                    hideAddModule && hideAddModule();
-                    getObj && getObj();
-                    message.success("新增用户成功！");
-                } else {
-                    message.error("新增用户失败！");
-                }
-            });
+            if (!err) {
+                addUser(values).then(res => {
+                    if (res.success) {
+                        const {hideAddModule, queryList} = this.props;
+                        message.success('新增用户成功');
+                        hideAddModule && hideAddModule();
+                        queryList && queryList({});
+                    } else {
+                        message.error(res.message);
+                    }
+                });
+            }
         })
     };
 
@@ -51,20 +37,28 @@ class Add extends React.Component {
 
         return (
             <Form layout="vertical" hideRequiredMark>
-                <Form.Item {...formItemLayout} label="Name:">
+                <Form.Item {...formItemLayout} label="用户名:">
                     {
-                        getFieldDecorator('name', {
+                        getFieldDecorator('user', {
                                 rules: [{required: true, message: '请输入用户名！'}],
                             }
-                        )(<Input placeholder="Please enter user name"/>)
+                        )(<Input placeholder="用户名创建后将不可修改，请谨慎选择"/>)
                     }
                 </Form.Item>
-                <Form.Item {...formItemLayout} label="生日:">
+                <Form.Item {...formItemLayout} label="密码:">
                     {
-                        getFieldDecorator('birthday', {
-                                rules: [{required: true, message: '请选择生日！'}],
+                        getFieldDecorator('password', {
+                                rules: [{required: true, message: '请输入密码！'}],
                             }
-                        )(<DatePicker style={{width: '100%'}} placeholder="Please select an birthday"/>)
+                        )(<Input type="password" placeholder="Please enter password"/>)
+                    }
+                </Form.Item>
+                <Form.Item {...formItemLayout} label="姓名:">
+                    {
+                        getFieldDecorator('name', {
+                                rules: [{required: true, message: '请输入姓名！'}],
+                            }
+                        )(<Input placeholder="Please enter name"/>)
                     }
                 </Form.Item>
                 <Form.Item {...formItemLayout} label="Sex:">
@@ -80,15 +74,12 @@ class Add extends React.Component {
                         )
                     }
                 </Form.Item>
-                <Form.Item {...formItemLayout} label="Age:">
+                <Form.Item {...formItemLayout} label="生日:">
                     {
-                        getFieldDecorator('age', {
-                                rules: [
-                                    {required: true, message: '请输入年龄！'},
-                                    {pattern: new RegExp(/^[1-8]{1}[0-9]{1}$/, "g"), message: '请输入有效年龄'}
-                                ],
+                        getFieldDecorator('birthday', {
+                                rules: [{required: true, message: '请选择生日！'}],
                             }
-                        )(<Input placeholder="Please enter user age"/>)
+                        )(<DatePicker style={{width: '100%'}} placeholder="Please select an birthday"/>)
                     }
                 </Form.Item>
                 <Form.Item {...formItemLayout} label="地址:">
@@ -120,14 +111,14 @@ class Add extends React.Component {
                     }}
                 >
                     <Button
-                        icon={"close"}
-                        onClick={this.onReset}
+                        icon="redo"
+                        onClick={() => this.props.form.resetFields()}
                         style={{marginRight: 8}}
                     >
                         重制
                     </Button>
                     <Button
-                        icon={"check"}
+                        icon="check"
                         onClick={this.onOK}
                         type="primary"
                     >

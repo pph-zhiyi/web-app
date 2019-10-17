@@ -5,7 +5,6 @@ import {
     USER_QUERY_LIST,
     USER_SHOW_ADD_MODEL,
     USER_HIDE_ADD_MODEL,
-    USER_ADD_INFO,
     USER_EDIT_INFO,
     USER_DELETE_INFO
 } from '../../store/actionTypes';
@@ -35,7 +34,7 @@ class User extends React.Component {
 
     render() {
         const {
-            queryList, onPageChangeHandler, onShowSizeChange, addUser, editUser,
+            queryList, onPageChangeHandler, onShowSizeChange, editUser,
             deleteUser, showAddModule, hideAddModule
         } = this.props;
         let {obj, addVisible, loading} = this.props;
@@ -51,7 +50,6 @@ class User extends React.Component {
                 queryList={queryList}
                 onPageChangeHandler={onPageChangeHandler}
                 onShowSizeChange={onShowSizeChange}
-                addUser={addUser}
                 editUser={editUser}
                 deleteUser={deleteUser}
                 showAddModule={showAddModule}
@@ -114,13 +112,6 @@ const dispatchToProps = (dispatch) => {
             let action = {
                 type: USER_HIDE_ADD_MODEL,
                 addVisible: false
-            };
-            dispatch(action);
-        },
-        addUser(params) {
-            let action = {
-                type: USER_ADD_INFO,
-                params
             };
             dispatch(action);
         },
