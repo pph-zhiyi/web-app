@@ -22,7 +22,9 @@ export default class App extends Component {
 
         return (
             <div>
-                <Layout style={{minHeight: '100vh'}}>
+                <Layout
+                    style={{minHeight: '100vh'}}
+                >
                     <Sider
                         collapsible
                         theme="light"
@@ -37,7 +39,7 @@ export default class App extends Component {
                         >
                             <Menu.Item key="index">
                                 <Link to="/"/>
-                                <h3 style={{fontSize: 25, "textAlign": "center"}}> 锤子哦 </h3>
+                                <h3 style={{fontSize: 25, textAlign: "center"}}> 锤子哦 </h3>
                             </Menu.Item>
                             <Menu.Item key="login">
                                 <Icon type="desktop"/>

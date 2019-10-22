@@ -278,12 +278,14 @@ class List extends Component {
                         <Row>
                             <Col span={6}>
                                 <Search
+                                    style={{marginLeft: 10}}
                                     className={'topLeftBtn'}
                                     placeholder="请输入用户名（模糊匹配）"
                                     onSearch={(value) => {
                                         queryUserList(value)
                                     }}
-                                    enterButton/>
+                                    enterButton
+                                />
                             </Col>
                             <Col span={6} offset={12}>
                                 <Button

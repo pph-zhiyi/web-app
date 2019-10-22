@@ -19,9 +19,8 @@ code {
 }
 
 .topRightBtn {
-    margin-top: 10px;
-    margin-bottom: 10px;
     float: right;
+    margin: 10px 10px;
 }
 
 .topLeftBtn {
@@ -32,4 +31,18 @@ code {
 
 .blueBtn {
     color: #1890ff;
+}
+
+.ant-layout-content {
+    background: white;
+    margin: 0 !important;
+    padding: 0 10px;
+}
+
+.ant-table-warpper {
+    background: #f4f6f9;
+}
+
+.ant-layout-footer {
+    background: white !important;
 }
