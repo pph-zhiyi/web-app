@@ -57,7 +57,7 @@ export const setCurrentUser = (isExists, token, msg, decoded) => {
 };
 
 export const logoutUser = () => dispatch => {
-    dispatch({
+    return dispatch({
         type: LOG_OUT_USER
     });
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import List from '../../pages/user/List';
 import {
@@ -12,7 +12,7 @@ import * as userService from '../../services/userService';
 
 let globalQueryParams;
 
-class User extends React.Component {
+class User extends Component {
     constructor(props) {
         super(props);
         this.state = {

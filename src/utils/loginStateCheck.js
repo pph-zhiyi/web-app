@@ -15,7 +15,7 @@ const loginStateCheck = () => {
         const currentTime = Date.now() / 1000;//由毫秒转成秒
         // 判断当前时间是否大于token中的exp时间;如果大于是为过期
         if (decoded.exp < currentTime) {
-            store.dispatch(logoutUser);
+            logoutUser();
             if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
                 countDown(5, true);
                 localStorage.removeItem('token')
