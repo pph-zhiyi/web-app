@@ -8,7 +8,7 @@ import {Link, Route, Redirect, Switch} from 'react-router-dom';
 const {Header, Content, Footer, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
 
-export default class MyIndex extends React.Component {
+export default class App extends React.Component {
 
     render() {
         return (
@@ -71,8 +71,8 @@ export default class MyIndex extends React.Component {
                                     style={{marginTop: 12, textAlign: "center", marginLeft: 10, marginRight: 10}}
                                     message="玩个 🔨 啊..."
                                     type="info"
-                                    banner="true"
-                                    closable={true}
+                                    // banner="true"
+                                    // closable={true}
                                 />
                             </div>
                         </Header>

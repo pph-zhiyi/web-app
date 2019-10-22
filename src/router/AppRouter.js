@@ -1,7 +1,7 @@
 import React from 'react';
 import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
 import Login from '../components/login/Login';
-import MyIndex from '../components/MyIndex';
+import App from '../components/App';
 
 const AppRouter = () => {
     return (
@@ -9,7 +9,7 @@ const AppRouter = () => {
             <Switch>
                 <Redirect from="/" to='/login' exact/>
                 <Route path="/login" exact component={Login}/>
-                <Route path="/app" component={MyIndex}/>
+                <Route path="/app" component={App}/>
             </Switch>
         </BrowserRouter>
     )

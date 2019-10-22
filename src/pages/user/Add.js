@@ -18,6 +18,7 @@ class Add extends React.Component {
                     if (res.success) {
                         const {hideAddModule, queryList} = this.props;
                         message.success('新增用户成功');
+                        this.props.form.resetFields();
                         hideAddModule && hideAddModule();
                         queryList && queryList({});
                     } else {

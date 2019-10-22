@@ -1,25 +1,50 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import {
-    Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal, message
+    Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal, message,
+    Badge
 } from 'antd';
 import Edit from "./Edit";
 import Add from "./Add";
 import '../../index.css';
 import moment from "moment";
-import {deleteUser} from '../../services/userService';
+import {deleteUser, queryLoginLogByUser} from '../../services/userService';
 
 const {Search} = Input;
 
 class List extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            expandedData: {},
+            expandedLoading: false
+        };
     }
 
     componentDidMount() {
         this.props.queryList(this.props.queryParams);
     }
+
+    onExpand = (expanded, record) => {
+        if (expanded) {
+            this.setState({
+                expandedLoading: true
+            });
+            queryLoginLogByUser({user: record.user})
+                .then(res => {
+                    if (res.success) {
+                        let oldExpandedData = this.state.expandedData;
+                        oldExpandedData[record.user] = res.data;
+                        this.setState({
+                            expandedLoading: false,
+                            expandedData: oldExpandedData
+                        });
+                    } else {
+                        message.error(res.message);
+                    }
+                });
+        }
+    };
 
     render() {
         const {
@@ -158,12 +183,93 @@ class List extends Component {
                     return (
                         <Dropdown
                             overlay={menu}>
-                            <span> Open <Icon type="down"/> </span>
+                            <span className='blueBtn'> Open <Icon type="down"/> </span>
                         </Dropdown>
                     );
                 },
             },
         ];
+
+        const expandedRowRender = (record) => {
+            const childColumns = [
+                {title: '用户名', dataIndex: 'user', key: 'user'},
+                {
+                    title: '密码',
+                    dataIndex: 'password',
+                    key: 'password',
+                    render: (text, record) => {
+                        if (record.isLogin === 1) {
+                            text = "***";
+                        }
+                        return (
+                            <span>{text}</span>
+                        );
+                    }
+                },
+                {
+                    title: '登录时间',
+                    dataIndex: 'entryTime',
+                    key: 'entryTime',
+                    render: (text) => {
+                        return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
+                    }
+                },
+                {
+                    title: '是否通过',
+                    key: 'isLogin',
+                    dataIndex: 'isLogin',
+                    render: (text) => {
+                        let status = text ? "success" : "error";
+                        let msg = text ? "成功" : "失败";
+                        return (
+                            <span>
+                                <Badge status={status}/>
+                                {msg}
+                            </span>
+                        );
+                    }
+                },
+                {
+                    title: '用户信息',
+                    dataIndex: 'userInfo',
+                    key: 'userInfo',
+                    render: (text) => {
+                        let str = text;
+                        if (text && text.length > 30) {
+                            str = text.substring(0, 20).concat('......');
+                        }
+                        if (!text) {
+                            str = '暂无';
+                        }
+                        return (
+                            <Tooltip placement="top" title={text}>
+                                <span className='blueBtn'> {str} </span>
+                            </Tooltip>
+                        );
+                    }
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    dataIndex: 'action',
+                    render: () => {
+                        return (
+                            <span className='blueBtn'> 详情 </span>
+                        );
+                    }
+
+                }
+            ];
+            return (
+                <Table
+                    columns={childColumns}
+                    dataSource={this.state.expandedData[record.user]}
+                    rowKey={record => record.id}
+                    pagination={true}
+                    loading={this.state.expandedLoading}
+                />
+            );
+        };
 
         return (
             <div className="ant-table-warpper">
@@ -173,7 +279,7 @@ class List extends Component {
                             <Col span={6}>
                                 <Search
                                     className={'topLeftBtn'}
-                                    placeholder="请输入用户名"
+                                    placeholder="请输入用户名（模糊匹配）"
                                     onSearch={(value) => {
                                         queryUserList(value)
                                     }}
@@ -196,10 +302,13 @@ class List extends Component {
                         columns={columns}
                         dataSource={obj.data}
                         rowKey={record => record.id}
-                        // pagination={this.state.pagination}
                         pagination={false}
                         loading={loading}
-                        // onChange={this.handleTableChange}
+                        expandedRowRender={record => {
+                            return expandedRowRender(record)
+                        }}
+                        onExpand={(expanded, record) => this.onExpand(expanded, record)}
+                        expandRowByClick={false}
                     />
                     <div>
                         <Pagination

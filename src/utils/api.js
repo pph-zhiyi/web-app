@@ -23,34 +23,40 @@ export function getRequestConf(token) {
     };
 }
 
-api.interceptors.response.use(
-    function (response) {
-        // console.log('api response', response);
+api.interceptors.request.use(config => {
+    return config;
+}, err => {
+    message.error('请求超时！');
+    return Promise.resolve();
+});
+
+api.interceptors.response.use(res => {
         loginStateCheck();
-        const result = response.data;
-        if (result.code === 401) {
-            // TODO 跳转登录
-            message.error('请先登录！');
-        } else if (response['headers']['content-disposition']
-            && response['headers']['content-disposition'].indexOf('filename=') > 0) {
+        if (res.status === 200) {
+            return res.data;
+        } else if (res['headers']['content-disposition']
+            && res['headers']['content-disposition'].indexOf('filename=') > 0) {
             // 若是文件流，直接返回
-            return response;
+            return res;
         } else {
-            return result;
+            message.error(res['message']);
         }
-    },
-    function (error) {
+    }, err => {
         loginStateCheck();
-        // console.log("api error", error);
-        // const code = error.response.code;
-        // if (code === 401) {
-        //     //    TODO 跳转登录
-        // } else if (code === 500) {
-        //     message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
-        // } else {
-        //     message.error('请求失败, 错误代码 ['.concat(error.response.message).concat(']'))
-        // }
-        return Promise.reject(error);
+        try {
+            const response = err.response;
+            if (response.status === 504 || response.status === 404) {
+                message.error("服务器异常");
+            } else if (response.status === 401 || response.status === 403) {
+                message.error("权限异常");
+            } else {
+                message.error(response.message);
+            }
+            return Promise.reject(err);
+            // return Promise.resolve(error);
+        } catch (e) {
+            message.error("请求服务器异常");
+        }
     }
 );
 

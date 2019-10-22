@@ -72,33 +72,39 @@ const dispatchToProps = (dispatch) => {
     return {
         queryList(params) {
             userService.queryUserList(params).then(res => {
-                let action = {
-                    type: USER_QUERY_LIST,
-                    obj: res.data
-                };
-                dispatch(action);
+                if (res) {
+                    let action = {
+                        type: USER_QUERY_LIST,
+                        obj: res.data
+                    };
+                    dispatch(action);
+                }
             });
         },
         onPageChangeHandler(pageNo, pageSize) {
             globalQueryParams.pageNo = pageNo;
             globalQueryParams.pageSize = pageSize;
             userService.queryUserList(globalQueryParams).then(res => {
-                let action = {
-                    type: USER_QUERY_LIST,
-                    obj: res.data
-                };
-                dispatch(action);
+                if (res) {
+                    let action = {
+                        type: USER_QUERY_LIST,
+                        obj: res.data
+                    };
+                    dispatch(action);
+                }
             });
         },
         onShowSizeChange(pageNo, pageSize) {
             globalQueryParams.pageNo = pageNo;
             globalQueryParams.pageSize = pageSize;
             userService.queryUserList(globalQueryParams).then(res => {
-                let action = {
-                    type: USER_QUERY_LIST,
-                    obj: res.data
-                };
-                dispatch(action);
+                if (res) {
+                    let action = {
+                        type: USER_QUERY_LIST,
+                        obj: res.data
+                    };
+                    dispatch(action);
+                }
             });
         },
         showAddModule() {

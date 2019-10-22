@@ -26,7 +26,7 @@ const loginStateCheck = () => {
             countDown(3, false);
         }
     }
-}
+};
 
 function countDown(time, flag) {
     const modal = Modal.warning({

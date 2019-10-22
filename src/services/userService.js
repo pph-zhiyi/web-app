@@ -36,3 +36,12 @@ export function deleteUser(params) {
     return api.post(DEFAULT_REQUEST_HOST.concat('/user/delete'), params, getRequestConf(localStorage.token));
 }
 
+/**
+ * 查询用户登录记录
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export function queryLoginLogByUser(params) {
+    return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/login/log/by/user'), params,
+        getRequestConf(localStorage.token));
+}
