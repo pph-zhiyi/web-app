@@ -45,3 +45,12 @@ export function queryLoginLogByUser(params) {
     return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/login/log/by/user'), params,
         getRequestConf(localStorage.token));
 }
+
+/**
+ * 删除用户
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export function queryUserLoginCount(params) {
+    return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/user/login/count'), params, getRequestConf(localStorage.token));
+}

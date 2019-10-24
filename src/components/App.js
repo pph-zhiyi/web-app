@@ -55,7 +55,7 @@ export default class App extends Component {
                                 }
                             >
                                 <Menu.Item key="/app/user/list">
-                                    <Link to="/app/user/list"> 用户管理列表 </Link>
+                                    <Link to="/app/user/list"> 用户管理 </Link>
                                 </Menu.Item>
                                 <Menu.Item key="/app/user/charts">
                                     <Link to="/app/user/charts"> 图表统计 </Link>

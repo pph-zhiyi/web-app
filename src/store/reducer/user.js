@@ -1,7 +1,9 @@
 import {USER_QUERY_LIST, USER_SHOW_ADD_MODEL, USER_HIDE_ADD_MODEL} from '../actionTypes';
 
 const initState = {
-    obj: {},
+    obj: {
+        pageSize: 12
+    },
     addVisible: false,
     loading: false
 };

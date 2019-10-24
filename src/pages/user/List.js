@@ -193,7 +193,11 @@ class List extends Component {
 
         const expandedRowRender = (record) => {
             const childColumns = [
-                {title: '用户名', dataIndex: 'user', key: 'user'},
+                {
+                    title: '用户名',
+                    dataIndex: 'user',
+                    key: 'user'
+                },
                 {
                     title: '密码',
                     dataIndex: 'password',

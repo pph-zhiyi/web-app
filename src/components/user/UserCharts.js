@@ -1,36 +1,69 @@
 import React, {Component, Fragment} from 'react';
+import {message} from 'antd';
 import G2 from '@antv/g2';
+import {queryUserLoginCount} from '../../services/userService';
 
 class UserCharts extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            userLoginCountList: []
+        };
     }
 
     componentDidMount() {
-        this.userLogin();
+        queryUserLoginCount({startTime: 1546272000000, endTime: 1572537600000})
+            .then(res => {
+                if (res.success) {
+                    this.setState({
+                        userLoginCountList: res.data
+                    });
+                    this.userLogin();
+                } else {
+                    message.error(res.message);
+                }
+            });
     }
 
     userLogin = () => {
-        const data = [
-            {genre: 'Sports', sold: 275},
-            {genre: 'Strategy', sold: 115},
-            {genre: 'Action', sold: 120},
-            {genre: 'Shooter', sold: 350},
-            {genre: 'Other', sold: 150}
-        ];
-        // G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
-        // Step 1: 创建 Chart 对象
-        const chart = new G2.Chart({
-            container: 'c1', // 指定图表容器 ID
-            width: 600, // 指定图表宽度
-            height: 300 // 指定图表高度
+        // const imgs = [
+        //     'https://zos.alipayobjects.com/rmsportal/mYhpaYHyHhjYcQf.png',
+        //     'https://zos.alipayobjects.com/rmsportal/JBxkqlzhrlkGlLW.png',
+        //     'https://zos.alipayobjects.com/rmsportal/zlkGnEMgOawcyeX.png',
+        //     'https://zos.alipayobjects.com/rmsportal/KzCdIdkwsXdtWkg.png'
+        // ];
+
+        var imageMap = {
+            'enen': 'https://zos.alipayobjects.com/rmsportal/mYhpaYHyHhjYcQf.png',
+            'pph': 'https://zos.alipayobjects.com/rmsportal/JBxkqlzhrlkGlLW.png',
+            'haha': 'https://zos.alipayobjects.com/rmsportal/zlkGnEMgOawcyeX.png',
+            'hehe': 'https://zos.alipayobjects.com/rmsportal/KzCdIdkwsXdtWkg.png',
+            'zeze': 'https://zos.alipayobjects.com/rmsportal/mYhpaYHyHhjYcQf.png'
+        };
+        var chart = new G2.Chart({
+            container: 'c1',
+            forceFit: true,
+            height: 500,
+            padding: [60, 20, 40, 60]
         });
-        // Step 2: 载入数据源
-        chart.source(data);
-        // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
-        chart.interval().position('genre*sold').color('genre')
-        // Step 4: 渲染图表
+        chart.source(this.state.userLoginCountList, {
+            vote: {
+                min: 0
+            }
+        });
+        chart.legend(false);
+        chart.axis('vote', {
+            labels: null,
+            title: null,
+            line: null,
+            tickLine: null
+        });
+        chart.interval().position('user*loginCount')
+            .color('user', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
+        chart.point().position('user*loginCount').size(60)
+            .shape('user', function (name) {
+                return ['image', imageMap[name]];
+            });
         chart.render();
     };
 
@@ -38,6 +71,7 @@ class UserCharts extends Component {
 
         return (
             <Fragment>
+                <h3 style={{marginLeft: 20, fontSize: 20}}> 用户登录次数统计 </h3>
                 <div id="c1"/>
             </Fragment>
         );
