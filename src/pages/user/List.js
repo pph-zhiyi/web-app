@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import {
     Table, Menu, Popconfirm, Dropdown, Icon, Tag, Button, Input, Row, Col, Tooltip, Pagination, Modal, message,
-    Badge
+    Badge, LocaleProvider
 } from 'antd';
+import zhCN from 'antd/es/locale-provider/zh_CN';
 import Edit from "./Edit";
 import Add from "./Add";
 import '../../index.css';
@@ -313,16 +314,19 @@ class List extends Component {
                         expandRowByClick={false}
                     />
                     <div>
-                        <Pagination
-                            className='ant-pagination ant-table-pagination'
-                            total={obj.total}
-                            showTotal={total => `共 ${total} 项`}
-                            current={obj.pageNo}
-                            onChange={onPageChangeHandler}
-                            onShowSizeChange={onShowSizeChange}
-                            showSizeChanger
-                            showQuickJumper
-                        />
+                        <LocaleProvider locale={zhCN}>
+                            <Pagination
+                                className='ant-pagination ant-table-pagination'
+                                total={obj.total}
+                                showTotal={total => `共 ${total} 项`}
+                                current={obj.pageNo}
+                                pageSize={obj.pageSize}
+                                onChange={onPageChangeHandler}
+                                onShowSizeChange={onShowSizeChange}
+                                showSizeChanger
+                                showQuickJumper
+                            />
+                        </LocaleProvider>
                     </div>
                 </div>
                 <Modal

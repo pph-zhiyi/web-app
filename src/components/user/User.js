@@ -18,7 +18,7 @@ class User extends Component {
         this.state = {
             queryParams: {
                 pageNo: 1,
-                pageSize: 13,
+                pageSize: 12,
                 name: null
             }
         };
