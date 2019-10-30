@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Layout, Menu, Icon, Alert} from 'antd';
+import {Layout, Menu, Icon, Alert, Switch as Swi} from 'antd';
 import '../index.css';
 import User from '../components/user/User';
 import UserCharts from "./user/UserCharts";
@@ -13,8 +13,23 @@ const SubMenu = Menu.SubMenu;
 export default class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            theme: "light",
+            swiColor: "#DACD77"
+        };
     }
+
+    /**
+     * 更换主题
+     */
+    changeTheme = () => {
+        const theme = this.state.theme === "light" ? "dark" : "light";
+        const swiColor = this.state.swiColor === "#DACD77" ? "#C0C0C0" : "#DACD77";
+        this.setState({
+            theme,
+            swiColor
+        })
+    };
 
     render() {
         const pathname = this.props.history.location.pathname;
@@ -22,98 +37,83 @@ export default class App extends Component {
 
         return (
             <div>
-                <Layout
-                    style={{minHeight: '100vh'}}
-                >
+                <Layout style={{minHeight: '100vh'}}>
                     <Sider
-                        collapsible
-                        theme="light"
+                        theme={this.state.theme}
                         width="300"
+                        collapsible
                     >
                         <div className="logo"/>
                         <Menu
-                            theme="light"
+                            theme={this.state.theme}
                             defaultOpenKeys={[smk ? smk : 'user']}
                             mode="inline"
                             selectedKeys={[pathname]}
                         >
-                            <Menu.Item key="index">
+                            <Menu.Item className="app-mi-index" key="index">
                                 <Link to="/"/>
-                                <h3 style={{fontSize: 25, textAlign: "center"}}> 锤子哦 </h3>
+                                <h3> 锤子哦 </h3>
                             </Menu.Item>
                             <Menu.Item key="login">
                                 <Icon type="desktop"/>
-                                <span><a href="/"> 登录 / 切换账号 </a></span>
+                                <span>
+                                    <Link to="/"> 登录 / 切换账号 </Link>
+                                    <Swi
+                                        className="app-mi-swi"
+                                        style={{background: this.state.swiColor}}
+                                        checkedChildren="白"
+                                        unCheckedChildren="黑"
+                                        onClick={this.changeTheme}
+                                        defaultChecked
+                                    />
+                                </span>
                             </Menu.Item>
-                            <SubMenu
-                                key="user"
-                                title={
-                                    <span>
-                                        <Icon type="user"/>
-                                        <span> User </span>
-                                    </span>
-                                }
-                            >
-                                <Menu.Item key="/app/user/list">
-                                    <Link to="/app/user/list"> 用户管理 </Link>
-                                </Menu.Item>
-                                <Menu.Item key="/app/user/charts">
-                                    <Link to="/app/user/charts"> 图表统计 </Link>
-                                </Menu.Item>
-                                <Menu.Item key="/app/user/antd/date">
-                                    <Link to="/app/user/antd/date"> DatePicker </Link>
-                                </Menu.Item>
-                            </SubMenu>
-                            <SubMenu
-                                key="team"
-                                title={
-                                    <span>
-                                        <Icon type="team"/>
-                                        <span> Team </span>
-                                    </span>
-                                }
-                            >
-                                <Menu.Item key="/app/team/d1">
-                                    <Link to="/app/team/d1"> 我的第一个 </Link>
-                                </Menu.Item>
-                                <Menu.Item key="/app/team/d2">
-                                    <Link to="/app/team/d2"> 我的第二个 </Link>
-                                </Menu.Item>
-                                <Menu.Item key="/app/team/d3">
-                                    <Link to="/app/team/d3"> 我的第三个 </Link>
-                                </Menu.Item>
-                            </SubMenu>
-                            <Menu.Item key="file">
-                                <Icon type="file"/>
-                                <span> File </span>
-                            </Menu.Item>
+                            {
+                                routerConfigs.map(item => {
+                                    return (
+                                        <SubMenu
+                                            key={item.key}
+                                            title={item.title}
+                                        >
+                                            {
+                                                item.mis.map(item => {
+                                                    return (
+                                                        <Menu.Item key={item.key}>
+                                                            <Link to={item.key}> {item.content} </Link>
+                                                        </Menu.Item>
+                                                    );
+                                                })
+                                            }
+                                        </SubMenu>
+                                    );
+                                })
+                            }
                         </Menu>
                     </Sider>
                     <Layout>
-                        <Header style={{background: '#fff', padding: 0}}>
-                            <div>
-                                <Alert
-                                    style={{marginTop: 12, textAlign: "center", marginLeft: 10, marginRight: 10}}
-                                    message="玩个 🔨 啊..."
-                                    type="info"
-                                    banner="true"
-                                    // closable={true}
-                                />
-                            </div>
+                        <Header className="app-layout-header">
+                            <Alert
+                                className="app-layout-header-alert"
+                                message="玩个 🔨 啊 ....."
+                                type="warning"
+                            />
                         </Header>
-                        <Content style={{margin: '0 16px'}}>
+                        <Content className="app-layout-content">
                             <Switch>
-                                <Route path="/app/user/list" component={User}/>
-                                <Route path="/app/user/charts" component={UserCharts}/>
-                                <Route path="/app/user/antd/date" component={AntdDatePicker}/>
-                                <Route path="/app/team/d1" component={Demo}/>
-                                <Route path="/app/team/d2" component={Demo}/>
-                                <Route path="/app/team/d3" component={Demo}/>
+                                {
+                                    routerConfigs.map(item =>
+                                        item.mis.map(item => {
+                                            return (
+                                                <Route path={item.key} component={item.component}/>
+                                            );
+                                        })
+                                    )
+                                }
                                 <Redirect from="/app" to='/app/user/list'/>
                             </Switch>
                         </Content>
                         <Footer style={{textAlign: 'center'}}>
-                            PPH ©2019 Created by Zhiyi
+                            PPH ©2019 Created by Zhi-yi
                         </Footer>
                     </Layout>
                 </Layout>
@@ -121,3 +121,72 @@ export default class App extends Component {
         );
     }
 }
+
+/**
+ * 页面路由配置
+ * @type {*[]}
+ */
+const routerConfigs = [
+    {
+        key: "user",
+        title: <span>
+            <Icon type="user"/>
+            <span> User </span>
+        </span>,
+        mis: [
+            {
+                key: "/app/user/list",
+                content: "用户列表",
+                component: User
+            },
+            {
+                key: "/app/user/charts",
+                content: "图表统计",
+                component: UserCharts
+            },
+            {
+                key: "/app/user/antd/date",
+                content: "DatePicker",
+                component: AntdDatePicker
+            }
+        ]
+    },
+    {
+        key: "team",
+        title: <span>
+            <Icon type="loading"/>
+            <span> Team </span>
+        </span>,
+        mis: [
+            {
+                key: "/app/team/d1",
+                content: "我是第一个",
+                component: Demo
+            },
+            {
+                key: "/app/team/d2",
+                content: "我是第二个",
+                component: Demo
+            },
+            {
+                key: "/app/team/d3",
+                content: "我是第三个",
+                component: Demo
+            }
+        ]
+    },
+    {
+        key: "file",
+        title: <span>
+            <Icon type="file"/>
+            <span> File </span>
+        </span>,
+        mis: [
+            {
+                key: "/app/file/d1",
+                content: "我是第一个",
+                component: Demo
+            }
+        ]
+    }
+];

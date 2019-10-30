@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import {Empty} from 'antd';
 
 class Demo extends Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Demo extends Component {
                 >
                     敬请期待 {this.props.history.location.pathname.split('/')[3]}
                 </h1>
+                <Empty />
             </Fragment>
         );
     }

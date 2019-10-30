@@ -46,3 +46,31 @@ code {
 .ant-layout-footer {
     background: white !important;
 }
+
+.app-mi-swi {
+    float: right;
+    margin-top: 9px !important;
+}
+
+.app-mi-index h3 {
+    font-size: 25px;
+    text-align: center;
+    margin-top: 8px;
+    color: #FF6666;
+}
+
+.app-layout-header {
+    background: #fff !important;
+    padding: 0px !important;
+}
+
+.app-layout-header-alert {
+    margin-top: 12px !important;
+    text-align: center;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.app-layout-content {
+    margin: 0 16px;
+}
