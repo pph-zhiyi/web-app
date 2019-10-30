@@ -63,7 +63,7 @@ class List extends Component {
                 title: '用户名',
                 dataIndex: 'user',
                 key: 'user',
-                render: (text, record) => {
+                render: (text) => {
                     return (<span>{text}</span>);
                 },
             },
@@ -71,7 +71,7 @@ class List extends Component {
                 title: '姓名',
                 dataIndex: 'name',
                 key: 'name',
-                render: (text, record) => {
+                render: (text) => {
                     return (<span>{text}</span>);
                 },
             },
@@ -79,7 +79,7 @@ class List extends Component {
                 title: '性别',
                 key: 'sex',
                 dataIndex: 'sex',
-                render: (text, record) => {
+                render: (text) => {
                     let color = text === "男" ? "blue" : text === "女" ? "red" : "gray";
                     return (
                         <Tag color={color} key={text}>
@@ -92,7 +92,7 @@ class List extends Component {
                 title: '生日',
                 dataIndex: 'birthday',
                 key: 'birthday',
-                render: (text, record) => {
+                render: (text) => {
                     return (<span>{moment(text).format('YYYY-MM-DD')}</span>);
                 }
             },
@@ -123,7 +123,7 @@ class List extends Component {
                 title: '描述',
                 dataIndex: 'description',
                 key: 'description',
-                render: (text, record) => {
+                render: (text) => {
                     let str = text;
                     if (text && text.length > 10) {
                         str = text.substring(0, 5).concat('...');
@@ -136,25 +136,25 @@ class List extends Component {
                 }
             },
             {
-                title: '创建时间',
+                title: '注册时间',
                 dataIndex: 'gmtCreate',
                 key: 'gmtCreate',
-                render: (text, record) => {
+                render: (text) => {
                     return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
                 }
             },
             {
-                title: '修改时间',
+                title: '最近修改',
                 dataIndex: 'gmtModify',
                 key: 'gmtModify',
-                render: (text, record) => {
+                render: (text) => {
                     return (<span>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</span>);
                 }
             },
             {
                 title: '操作',
                 key: 'action',
-                render: (text, record, index) => {
+                render: (text, record) => {
                     let delUser = () => {
                         deleteUser({id: record.id}).then(res => {
                             if (res.success) {
@@ -293,7 +293,7 @@ class List extends Component {
                                 <Search
                                     style={{marginLeft: 10}}
                                     className={'topLeftBtn'}
-                                    placeholder="请输入用户名（模糊匹配）"
+                                    placeholder="请输入用户名（全局模糊匹配）"
                                     onSearch={(value) => {
                                         queryUserList(value)
                                     }}

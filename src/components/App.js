@@ -15,7 +15,8 @@ export default class App extends Component {
         super(props);
         this.state = {
             theme: "light",
-            swiColor: "#DACD77"
+            swiColor: "#DACD77",
+            collapsed: false
         };
     }
 
@@ -31,6 +32,12 @@ export default class App extends Component {
         })
     };
 
+    onCollapse = (collapsed) => {
+        this.setState({
+            collapsed
+        });
+    };
+
     render() {
         const pathname = this.props.history.location.pathname;
         const smk = pathname.split('/')[2];
@@ -41,6 +48,8 @@ export default class App extends Component {
                     <Sider
                         theme={this.state.theme}
                         width="300"
+                        onCollapse={(collapsed) => this.onCollapse(collapsed)}
+                        collapsed={this.state.collapsed}
                         collapsible
                     >
                         <div className="logo"/>
@@ -51,21 +60,35 @@ export default class App extends Component {
                             selectedKeys={[pathname]}
                         >
                             <Menu.Item className="app-mi-index" key="index">
-                                <Link to="/"/>
-                                <h3> 锤子哦 </h3>
+                                {
+                                    this.state.collapsed
+                                        ? <span>
+                                            <Icon type="apple" />
+                                            <span>锤子哦</span>
+                                        </span>
+                                        : <span>
+                                             <Link to="/"/>
+                                             <h3> 锤子哦 </h3>
+                                          </span>
+                                }
                             </Menu.Item>
                             <Menu.Item key="login">
                                 <Icon type="desktop"/>
                                 <span>
                                     <Link to="/"> 登录 / 切换账号 </Link>
-                                    <Swi
-                                        className="app-mi-swi"
-                                        style={{background: this.state.swiColor}}
-                                        checkedChildren="白"
-                                        unCheckedChildren="黑"
-                                        onClick={this.changeTheme}
-                                        defaultChecked
-                                    />
+                                    {
+                                        this.state.collapsed
+                                            ? null
+                                            : <Swi
+                                                className="app-mi-swi"
+                                                style={{background: this.state.swiColor}}
+                                                checkedChildren="白"
+                                                unCheckedChildren="黑"
+                                                onClick={this.changeTheme}
+                                                defaultChecked
+                                            />
+
+                                    }
                                 </span>
                             </Menu.Item>
                             {

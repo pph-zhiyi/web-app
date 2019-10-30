@@ -1,4 +1,4 @@
-import api, {DEFAULT_REQUEST_HOST, DEFAULT_REQUEST_CONFIGS} from '../utils/api';
+import api, {DEFAULT_REQUEST_HOST, DEFAULT_REQUEST_CONFIGS, getRequestConf} from '../utils/api';
 import {GET_ERRORS, SET_CURRENT_USER, LOG_OUT_USER} from '../store/actionTypes';
 import setAuthToken from '../utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -62,3 +62,7 @@ export const logoutUser = () => dispatch => {
     });
 };
 
+export function queryLoginLog(params) {
+    return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/lately/login'), params,
+        getRequestConf(localStorage.token));
+}
