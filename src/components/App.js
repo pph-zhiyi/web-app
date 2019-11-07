@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
-import {Layout, Menu, Icon, Alert, Switch as Swi} from 'antd';
+import React, {Component, Fragment} from 'react';
+import {Layout, Menu, Icon, Alert, Switch as Swi, Avatar, Tooltip} from 'antd';
 import '../index.css';
-import User from '../components/user/User';
-import UserCharts from "./user/UserCharts";
-import AntdDatePicker from './demo/AntdDatePicker';
-import Demo from "../pages/Demo";
 import {Link, Route, Redirect, Switch} from 'react-router-dom';
+import {routerConfigs} from '../utils/routerConfigs';
+import jwt_decode from 'jwt-decode'
+import moment from "moment";
 
 const {Header, Content, Footer, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -63,11 +62,10 @@ export default class App extends Component {
                                 {
                                     this.state.collapsed
                                         ? <span>
-                                            <Icon type="apple" />
-                                            <span>锤子哦</span>
+                                            <Icon type="apple"/>
+                                            <span> 锤子哦 </span>
                                         </span>
                                         : <span>
-                                             <Link to="/"/>
                                              <h3> 锤子哦 </h3>
                                           </span>
                                 }
@@ -115,101 +113,76 @@ export default class App extends Component {
                     </Sider>
                     <Layout>
                         <Header className="app-layout-header">
-                            <Alert
-                                className="app-layout-header-alert"
-                                message="玩个 🔨 啊 ....."
-                                type="warning"
-                            />
+                            {
+                                this.appHeader()
+                            }
                         </Header>
                         <Content className="app-layout-content">
-                            <Switch>
-                                {
-                                    routerConfigs.map(item =>
-                                        item.mis.map(item => {
-                                            return (
-                                                <Route path={item.key} component={item.component}/>
-                                            );
-                                        })
-                                    )
-                                }
-                                <Redirect from="/app" to='/app/user/list'/>
-                            </Switch>
+                            {
+                                this.appContent()
+                            }
                         </Content>
                         <Footer style={{textAlign: 'center'}}>
-                            PPH ©2019 Created by Zhi-yi
+                            {
+                                this.appFooter()
+                            }
                         </Footer>
                     </Layout>
                 </Layout>
             </div>
         );
     }
-}
 
-/**
- * 页面路由配置
- * @type {*[]}
- */
-const routerConfigs = [
-    {
-        key: "user",
-        title: <span>
-            <Icon type="user"/>
-            <span> User </span>
-        </span>,
-        mis: [
-            {
-                key: "/app/user/list",
-                content: "用户列表",
-                component: User
-            },
-            {
-                key: "/app/user/charts",
-                content: "图表统计",
-                component: UserCharts
-            },
-            {
-                key: "/app/user/antd/date",
-                content: "DatePicker",
-                component: AntdDatePicker
-            }
-        ]
-    },
-    {
-        key: "team",
-        title: <span>
-            <Icon type="loading"/>
-            <span> Team </span>
-        </span>,
-        mis: [
-            {
-                key: "/app/team/d1",
-                content: "我是第一个",
-                component: Demo
-            },
-            {
-                key: "/app/team/d2",
-                content: "我是第二个",
-                component: Demo
-            },
-            {
-                key: "/app/team/d3",
-                content: "我是第三个",
-                component: Demo
-            }
-        ]
-    },
-    {
-        key: "file",
-        title: <span>
-            <Icon type="file"/>
-            <span> File </span>
-        </span>,
-        mis: [
-            {
-                key: "/app/file/d1",
-                content: "我是第一个",
-                component: Demo
-            }
-        ]
-    }
-];
+    appHeader = () => {
+        let msg = {};
+        routerConfigs.map(item =>
+            item.mis.map(item => {
+                msg[item.key] = item.content;
+                return item;
+            })
+        );
+        const {jti} = jwt_decode(localStorage.token);
+        const {pathname} = this.props.history.location;
+        return (
+            <Fragment>
+                <Alert
+                    className="app-layout-header-alert"
+                    message={msg[pathname]}
+                    type="warning"
+                />
+                <Tooltip
+                    className="app-layout-header-avatar"
+                    placement="left"
+                    title={"当前用户：".concat(jti)}
+                >
+                    <Avatar icon="user"/>
+                </Tooltip>
+            </Fragment>
+        );
+    };
+
+    appContent = () => {
+        return (
+            <Switch>
+                {
+                    routerConfigs.map(item =>
+                        item.mis.map(item => {
+                            return (
+                                <Route path={item.key} component={item.component}/>
+                            );
+                        })
+                    )
+                }
+                <Redirect from="/app" to='/app/user/list'/>
+            </Switch>
+        );
+    };
+
+    appFooter = () => {
+        return (
+            <Fragment>
+                PPH ©2019 - {moment(new Date()).format('YYYY')} Created by Zhi-yi
+            </Fragment>
+        );
+    };
+}

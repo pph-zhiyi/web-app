@@ -15,7 +15,7 @@ class Demo extends Component {
                 >
                     敬请期待 {this.props.history.location.pathname.split('/')[3]}
                 </h1>
-                <Empty />
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
             </Fragment>
         );
     }

@@ -61,7 +61,8 @@ code {
 
 .app-layout-header {
     background: #fff !important;
-    padding: 0px !important;
+    padding: 0 !important;
+    position: relative;
 }
 
 .app-layout-header-alert {
@@ -69,6 +70,14 @@ code {
     text-align: center;
     margin-left: 10px !important;
     margin-right: 10px !important;
+}
+
+.app-layout-header-avatar {
+    /*color: #f56a00 !important;*/
+    /*background-color: #fde3cf !important;*/
+    position: absolute !important;
+    top: 16px;
+    right: 26px ;
 }
 
 .app-layout-content {

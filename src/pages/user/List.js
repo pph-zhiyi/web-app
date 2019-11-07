@@ -100,7 +100,7 @@ class List extends Component {
                 title: '年龄',
                 dataIndex: 'age',
                 key: 'age',
-                defaultSortOrder: 'descend',
+                // defaultSortOrder: 'descend',
                 sorter: (a, b) => {
                     let now = moment(new Date()).format('YYYY');
                     let b1 = moment(new Date(a['birthday'])).format('YYYY');
