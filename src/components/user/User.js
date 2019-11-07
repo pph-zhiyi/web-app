@@ -19,7 +19,7 @@ class User extends Component {
             queryParams: {
                 pageNo: 1,
                 pageSize: 12,
-                name: null
+                name: this.props.history.location.search.substr(6)
             }
         };
     }

@@ -297,6 +297,7 @@ class List extends Component {
                                     onSearch={(value) => {
                                         queryUserList(value)
                                     }}
+                                    defaultValue={this.props.queryParams.name}
                                     enterButton
                                 />
                             </Col>

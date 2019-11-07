@@ -37,6 +37,12 @@ export default class App extends Component {
         });
     };
 
+    userOnClick = (user) => {
+        if (this.props.history.location.pathname !== '/app/user/list') {
+            this.props.history.push(`/app/user/list?name=${user}`)
+        }
+    };
+
     render() {
         const pathname = this.props.history.location.pathname;
         const smk = pathname.split('/')[2];
@@ -151,11 +157,13 @@ export default class App extends Component {
                     type="warning"
                 />
                 <Tooltip
-                    className="app-layout-header-avatar"
+                    className="app-layout-header-span"
                     placement="left"
                     title={"当前用户：".concat(jti)}
                 >
-                    <Avatar icon="user"/>
+                    <span onClick={() => this.userOnClick(jti)}>
+                        <Avatar size="default" icon="user"/>
+                    </span>
                 </Tooltip>
             </Fragment>
         );
