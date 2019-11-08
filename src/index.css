@@ -70,6 +70,8 @@ code {
     text-align: center;
     margin-left: 10px !important;
     margin-right: 10px !important;
+    color: #FF6666 !important;
+    font-size: 20px !important;
 }
 
 .app-layout-header-span {

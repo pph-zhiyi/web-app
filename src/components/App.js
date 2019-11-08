@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
-import {Layout, Menu, Icon, Alert, Switch as Swi, Avatar, Tooltip} from 'antd';
+import {Alert, Avatar, Icon, Layout, Menu, Switch as Swi, Tooltip} from 'antd';
 import '../index.css';
-import {Link, Route, Redirect, Switch} from 'react-router-dom';
+import {Link, Redirect, Route, Switch} from 'react-router-dom';
 import {routerConfigs} from '../utils/routerConfigs';
 import jwt_decode from 'jwt-decode'
 import moment from "moment";
@@ -15,7 +15,7 @@ export default class App extends Component {
         this.state = {
             theme: "light",
             swiColor: "#DACD77",
-            collapsed: false
+            collapsed: this.props.history.location.pathname === '/app/blog/index'
         };
     }
 
@@ -40,6 +40,12 @@ export default class App extends Component {
     userOnClick = (user) => {
         if (this.props.history.location.pathname !== '/app/user/list') {
             this.props.history.push(`/app/user/list?name=${user}`)
+        }
+    };
+
+    menuChange = (e) => {
+        if (e.key === "/app/blog/index") {
+            this.onCollapse(true);
         }
     };
 
@@ -105,7 +111,10 @@ export default class App extends Component {
                                             {
                                                 item.mis.map(item => {
                                                     return (
-                                                        <Menu.Item key={item.key}>
+                                                        <Menu.Item
+                                                            key={item.key}
+                                                            onClick={(e) => this.menuChange(e)}
+                                                        >
                                                             <Link to={item.key}> {item.content} </Link>
                                                         </Menu.Item>
                                                     );
@@ -162,7 +171,11 @@ export default class App extends Component {
                     title={"当前用户：".concat(jti)}
                 >
                     <span onClick={() => this.userOnClick(jti)}>
-                        <Avatar size="default" icon="user"/>
+                        <Avatar
+                            style={{backgroundColor: "white", top: 4}}
+                            size="large"
+                            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        />
                     </span>
                 </Tooltip>
             </Fragment>

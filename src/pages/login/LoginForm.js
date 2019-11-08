@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Form, Icon, Input, Button, Checkbox} from 'antd';
+import {Button, Checkbox, Col, Form, Icon, Input, Row} from 'antd';
 
 class LoginForm extends React.Component {
 

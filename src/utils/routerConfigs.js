@@ -76,13 +76,13 @@ export const routerConfigs = [
     {
         key: "blog",
         title: <span>
-            <Icon type="book"/>
+            <Icon type="fire"/>
             <span> Blog </span>
         </span>,
         mis: [
             {
-                key: "/app/blog/d1",
-                content: "博客首页",
+                key: "/app/blog/index",
+                content: "我的博客",
                 component: Blog
             }
         ]
