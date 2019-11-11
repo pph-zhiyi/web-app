@@ -70,13 +70,12 @@ code {
     text-align: center;
     margin-left: 10px !important;
     margin-right: 10px !important;
-    color: #FF6666 !important;
+    color: #53cc8d !important;
     font-size: 20px !important;
+    font-family: '草书';
 }
 
 .app-layout-header-span {
-    /*color: #f56a00 !important;*/
-    /*background-color: #fde3cf !important;*/
     position: absolute !important;
     top: -2px;
     right: 25px ;
