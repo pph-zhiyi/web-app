@@ -1,17 +1,25 @@
 import React, {Component} from 'react';
-import {Comment, Avatar, Form, Button, List, Input, Icon, Tooltip, Row, Col, message as Message} from 'antd';
-import jwt_decode from 'jwt-decode'
+import {Avatar, Button, Col, Comment, Form, Icon, Input, List, message as Message, Row, Tooltip} from 'antd';
 import moment from 'moment';
-import {queryCauserieList} from '../../services/causerieService';
+import {queryCauserieList, userLike} from '../../services/causerieService';
 
 const {TextArea} = Input;
 
 const CommentList = ({comments}) => (
     <List
         dataSource={comments}
-        header={`共 ${comments.length} ${comments.length > 1 ? '条' : '条'}`}
+        // header={`共 ${comments.length} ${comments.length > 1 ? '条' : '条'}`}
+        header=' '
         itemLayout="horizontal"
         renderItem={props => <Comment {...props} />}
+        pagination={{
+            onChange: page => {
+            },
+            pageSize: 4,
+            showTotal: (total) => {
+                return `共 ${total} 条`;
+            }
+        }}
     />
 );
 
@@ -44,26 +52,31 @@ class Causerie extends Component {
         this.state = {
             comments: [],
             submitting: false,
-            value: '',
-            action: null,
-            likes: 0,
-            dislikes: 0,
+            value: ''
         };
     }
 
     componentDidMount() {
-        queryCauserieList({isPage: false})
+        this.queryCauserieList({isPage: false});
+    }
+
+    queryCauserieList = (params) => {
+        queryCauserieList(params)
             .then(res => {
                 const {success, message, data} = res;
                 if (success) {
                     let con = [];
                     data.data.map(item => {
                         con.push({
-                            actions: this.getActions(item['likes']),
+                            actions: this.getActions(item['id'], item['likes']),
                             avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                            author: item['authorName'],
+                            author: <p>
+                                作者：<a target="view_frame"
+                                      href={"localhost:3000/app/user/list?name=" + item['authorUser']}>
+                                {item['authorName']}</a>
+                            </p>,
                             content: <p>{item['content']}</p>,
-                            datetime: moment(item['commitTime']).fromNow()
+                            datetime: moment(moment(item['commitTime']).format('YYYY-MM-DD')).fromNow()
                         });
                         return item;
                     });
@@ -74,32 +87,32 @@ class Causerie extends Component {
                     Message.error(message);
                 }
             });
-    }
-
-    like = () => {
-        this.setState({
-            likes: 1,
-            dislikes: 0,
-            action: 'liked',
-        });
     };
 
-    dislike = () => {
-        this.setState({
-            likes: 0,
-            dislikes: 1,
-            action: 'disliked',
-        });
+    userLike = (contentId, theme) => {
+        userLike({contentId: contentId, user: this.props.jti, like: theme})
+            .then(res => {
+                const {success, message} = res;
+                if (success) {
+                    this.queryCauserieList({isPage: false});
+                } else {
+                    Message.error(message);
+                }
+            })
+    };
+
+    userComment = () => {
+        Message.warning("评论个锤子，赶紧点赞去")
     };
 
     del = (e) => {
-        console.log('删除', e)
+        Message.info("删除个锤子")
     };
 
-    getActions = (likes) => {
-        const {jti} = jwt_decode(localStorage.token);
+    getActions = (contentId, likes) => {
         let link = 0, dislike = 0, theme;
         let linkName = '暂无', dislikeName = '暂无';
+        const {jti} = this.props;
         likes.map(item => {
             if (item['isLike'] === 1) {
                 linkName = linkName === '暂无' ? '' : linkName;
@@ -110,7 +123,7 @@ class Causerie extends Component {
                 dislikeName = dislikeName === '暂无' ? '' : dislikeName;
                 theme = jti === item['likeUser'] ? 0 : theme;
                 dislike++;
-                dislikeName += ','.concat(item['likeName']);
+                dislikeName += ', '.concat(item['likeName']);
             }
             return item;
         });
@@ -120,7 +133,7 @@ class Causerie extends Component {
                       <Icon
                           type="like"
                           theme={theme === 1 ? "filled" : "outlined"}
-                          onClick={() => this.like()}
+                          onClick={() => this.userLike(contentId, theme === 1 ? null : 1)}
                       />
                 </Tooltip>
                 <span style={{paddingLeft: 8, cursor: 'auto'}}>{link}</span>
@@ -130,17 +143,28 @@ class Causerie extends Component {
                       <Icon
                           type="dislike"
                           theme={theme === 0 ? "filled" : "outlined"}
-                          onClick={() => this.dislike()}
+                          onClick={() => this.userLike(contentId, theme === 0 ? null : 0)}
                       />
                 </Tooltip>
                 <span style={{paddingLeft: 8, cursor: 'auto'}}>{dislike}</span>
             </span>,
-            <span key="comment-basic-reply-to"> 赞一个 </span>,
+            <span key="comment-basic-like-to"> 赞一个 </span>,
+            <span key="comment-basic-comment">
+                <Tooltip title="评论">
+                      <Icon
+                          type="message"
+                          onClick={() => this.userComment()}
+                      />
+                </Tooltip>
+                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}</span>
+            </span>,
+            <span key="comment-basic-reply-to"> 评论 </span>,
             <Tooltip title="删除">
                 <span style={{position: "absolute", right: 0, marginTop: -14}}>
                     <Icon
                         type="delete"
                         onClick={(e) => this.del(e)}
+                        disabled={true}
                     /> 删除
                 </span>
             </Tooltip>

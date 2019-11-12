@@ -70,9 +70,10 @@ code {
     text-align: center;
     margin-left: 10px !important;
     margin-right: 10px !important;
-    color: #53cc8d !important;
+    color: sienna !important;
     font-size: 20px !important;
-    font-family: '草书';
+    font-family: cursive;
+    background-color: white !important;
 }
 
 .app-layout-header-span {

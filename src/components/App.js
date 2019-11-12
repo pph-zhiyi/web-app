@@ -156,14 +156,17 @@ export default class App extends Component {
                 return item;
             })
         );
-        const {jti} = jwt_decode(localStorage.token);
+        let jti;
+        if (localStorage.token) {
+            jti = jwt_decode(localStorage.token)['jti'];
+        }
         const {pathname} = this.props.history.location;
         return (
             <Fragment>
                 <Alert
                     className="app-layout-header-alert"
                     message={msg[pathname]}
-                    type="warning"
+                    type="info"
                 />
                 <Tooltip
                     className="app-layout-header-span"

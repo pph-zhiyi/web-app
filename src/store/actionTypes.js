@@ -9,3 +9,5 @@ export const USER_HIDE_ADD_MODEL = 'user_hide_add_model';
 export const USER_ADD_INFO = 'user_add_info';
 export const USER_EDIT_INFO = 'user_edit_info';
 export const USER_DELETE_INFO = 'user_delete_info';
+
+export const CAUSERIE_QUERY_LIST = 'causerie_query_list';

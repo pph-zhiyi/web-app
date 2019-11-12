@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import {Tabs, Radio, Popover, Icon} from 'antd';
+import {Icon, Popover, Radio, Tabs} from 'antd';
 import {connect} from 'react-redux';
-import * as userService from "../../services/userService";
-import {
-    USER_QUERY_LIST,
-} from "../../store/actionTypes";
+import * as causerieService from "../../services/causerieService";
+import {CAUSERIE_QUERY_LIST,} from "../../store/actionTypes";
 import Causerie from "../../pages/blog/Causerie";
+import jwt_decode from 'jwt-decode'
 
 const {TabPane} = Tabs;
 
@@ -14,7 +13,16 @@ class Blog extends Component {
         super(props);
         this.state = {
             mode: 'top',
+            jti: ''
         };
+    }
+
+    componentDidMount() {
+        if (localStorage.token) {
+            this.setState({
+                jti: jwt_decode(localStorage.token)['jti']
+            })
+        }
     }
 
     handleModeChange = e => {
@@ -24,7 +32,8 @@ class Blog extends Component {
 
     render() {
         const {mode} = this.state;
-        const {text} = this.props;
+        const {text, causerieObj} = this.props;
+        const {queryCauserieList} = this.props;
         const popContent = (
             <Radio.Group
                 onChange={this.handleModeChange}
@@ -44,7 +53,7 @@ class Blog extends Component {
                     content={popContent}
                     placement="left"
                 >
-                    <Icon style={{float: "right", marginTop: 12}} type="caret-left" />
+                    <Icon style={{float: "right", marginTop: 12}} type="caret-left"/>
                 </Popover>
                 <Tabs
                     defaultActiveKey="causerie"
@@ -60,7 +69,11 @@ class Blog extends Component {
                         <h3 style={{textAlign: "center"}}> {text} </h3>
                     </TabPane>
                     <TabPane tab="随心一笔" key="causerie">
-                        <Causerie/>
+                        <Causerie
+                            jti={this.state.jti}
+                            causerieObj={causerieObj}
+                            queryCauserieList={queryCauserieList}
+                        />
                     </TabPane>
                 </Tabs>
             </div>
@@ -71,17 +84,18 @@ class Blog extends Component {
 const mapStateToProps = (initState) => {
     let state = initState.blog;
     return {
-        text: state.text
+        text: state.text,
+        causerieObj: state.causerieObj
     };
 };
 
 const dispatchToProps = (dispatch) => {
     return {
-        queryList(params) {
-            userService.queryUserList(params).then(res => {
+        queryCauserieList(params) {
+            causerieService.queryCauserieList(params).then(res => {
                 if (res) {
                     let action = {
-                        type: USER_QUERY_LIST,
+                        type: CAUSERIE_QUERY_LIST,
                         obj: res.data
                     };
                     dispatch(action);
