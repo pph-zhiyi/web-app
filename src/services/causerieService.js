@@ -1,4 +1,4 @@
-import api, {DEFAULT_REQUEST_HOST, getRequestConf} from '../utils/api';
+import api, {DEFAULT_REQUEST_HOST, DEFAULT_REQUEST_CONFIGS} from '../utils/api';
 
 /**
  * 获取数据集合
@@ -6,7 +6,7 @@ import api, {DEFAULT_REQUEST_HOST, getRequestConf} from '../utils/api';
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function queryCauserieList(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/causerie/query'), params, getRequestConf(localStorage.token));
+    return api.post(DEFAULT_REQUEST_HOST.concat('/causerie/query'), params, DEFAULT_REQUEST_CONFIGS);
 }
 
 /**
@@ -15,5 +15,14 @@ export function queryCauserieList(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function userLike(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/causerie/like'), params, getRequestConf(localStorage.token));
+    return api.post(DEFAULT_REQUEST_HOST.concat('/causerie/like'), params, DEFAULT_REQUEST_CONFIGS);
+}
+
+/**
+ * 新增
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export function commitContent(params) {
+    return api.post(DEFAULT_REQUEST_HOST.concat("/causerie/add"), params, DEFAULT_REQUEST_CONFIGS);
 }

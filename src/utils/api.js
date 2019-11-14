@@ -7,10 +7,12 @@ let api = axios.create({
     transformRequest: [data => JSON.stringify(data)]
 });
 
+export const {token} = localStorage;
 export const DEFAULT_REQUEST_HOST = 'http://localhost:8888';
 export const DEFAULT_REQUEST_CONFIGS = {
     headers: {
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
+        'token': token
     }
 };
 

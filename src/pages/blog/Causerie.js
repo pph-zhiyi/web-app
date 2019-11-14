@@ -1,30 +1,87 @@
 import React, {Component} from 'react';
-import {Avatar, Button, Col, Comment, Form, Icon, Input, List, message as Message, Row, Tooltip} from 'antd';
+import {
+    Avatar, Button, Col, Comment, Form, Icon, Input, List, message as Message, Row, Tooltip,
+    Spin, Popconfirm
+} from 'antd';
+import {withRouter} from 'react-router-dom'
 import moment from 'moment';
-import {queryCauserieList, userLike} from '../../services/causerieService';
+import {userLike, commitContent} from '../../services/causerieService';
 
 const {TextArea} = Input;
 
-const CommentList = ({comments}) => (
-    <List
-        dataSource={comments}
-        // header={`共 ${comments.length} ${comments.length > 1 ? '条' : '条'}`}
-        header=' '
-        itemLayout="horizontal"
-        renderItem={props => <Comment {...props} />}
-        pagination={{
-            onChange: page => {
-            },
-            pageSize: 4,
-            showTotal: (total) => {
-                return `共 ${total} 条`;
+// const IconText = ({type, text}) => (
+//     <span>
+//     <Icon type={type} style={{marginRight: 8}}/>
+//         {text}
+//   </span>
+// );
+// renderItem={item => (
+//     <List.Item
+//         key={item.title}
+//         actions={[
+//             <IconText type="star-o" text="156" key="list-vertical-star-o"/>,
+//             <IconText type="like-o" text="156" key="list-vertical-like-o"/>,
+//             <IconText type="message" text="2" key="list-vertical-message"/>,
+//         ]}
+//         extra={
+//             <div>
+//                 <img
+//                     width={100}
+//                     alt="logo"
+//                     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+//                 />
+//
+//                 <img
+//                     width={100}
+//                     alt="logo"
+//                     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+//                 />
+//             </div>
+//         }
+//     >
+//         <List.Item.Meta
+//             avatar={<Avatar src={item.avatar}/>}
+//             title={<a href={item.href}>{item.title}</a>}
+//             description={item.description}
+//         />
+//         {item.content}
+//     </List.Item>
+// )}
+
+const spinIcon = <Icon type="loading" style={{fontSize: 24}} spin/>;
+
+const CommentList = ({comments, loading}) => (
+    <Spin
+        tip="加载中..."
+        indicator={spinIcon}
+        spinning={loading}
+    >
+        <List
+            dataSource={comments}
+            // header={`共 ${comments.length} ${comments.length > 1 ? '条' : '条'}`}
+            header=' '
+            itemLayout="horizontal"
+            renderItem={
+                props => <Comment {...props} />
             }
-        }}
-    />
+            pagination={{
+                onChange: page => {
+                },
+                pageSize: 4,
+                showTotal: (total) => {
+                    return `共 ${total} 条`;
+                }
+            }}
+        />
+    </Spin>
 );
 
-const Editor = ({onChange, onSubmit, submitting, value}) => (
-    <div>
+const Editor = ({onChange, onSubmit, loading, value}) => (
+    <Spin
+        tip="加载中..."
+        indicator={spinIcon}
+        spinning={loading}
+    >
         <Form.Item>
             <TextArea
                 placeholder="随便写点儿什么吧....."
@@ -37,56 +94,51 @@ const Editor = ({onChange, onSubmit, submitting, value}) => (
             <Button
                 icon="check"
                 htmlType="submit"
-                loading={submitting}
                 onClick={onSubmit}
                 type="primary">
-                提交
+                发布
             </Button>
         </Form.Item>
-    </div>
+    </Spin>
 );
 
 class Causerie extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            comments: [],
-            submitting: false,
-            value: ''
+            value: '',
+            loading: false,
+            commitLoading: false
         };
     }
 
     componentDidMount() {
-        this.queryCauserieList({isPage: false});
+        this.props.queryCauserieList({isPage: false})
     }
 
-    queryCauserieList = (params) => {
-        queryCauserieList(params)
-            .then(res => {
-                const {success, message, data} = res;
-                if (success) {
-                    let con = [];
-                    data.data.map(item => {
-                        con.push({
-                            actions: this.getActions(item['id'], item['likes']),
-                            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                            author: <p>
-                                作者：<a target="view_frame"
-                                      href={"localhost:3000/app/user/list?name=" + item['authorUser']}>
-                                {item['authorName']}</a>
-                            </p>,
-                            content: <p>{item['content']}</p>,
-                            datetime: moment(moment(item['commitTime']).format('YYYY-MM-DD')).fromNow()
-                        });
-                        return item;
-                    });
-                    this.setState({
-                        comments: con
-                    })
-                } else {
-                    Message.error(message);
-                }
+    getCauserieList = (data) => {
+        let con = [];
+        data && data.map(item => {
+            con.push({
+                actions: this.getActions(item['id'], item['authorUser'], item['authorName'], item['likes']),
+                avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                author: <p> 作者:
+                    <b
+                        style={{color: '#FF99FF', cursor: 'pointer'}}
+                        onClick={() => this.openUser(item['authorUser'])}
+                    > {item['authorName']} </b>
+                </p>,
+                content: <p>{item['content']}</p>,
+                datetime: moment(moment(item['commitTime']).format('YYYY-MM-DD')).fromNow()
             });
+            return item;
+        });
+        return con;
+    };
+
+    openUser = (user) => {
+        // this.props.history.push(`/app/user/list?user=${user}`)
+        window.open(`/app/user/list?user=${user}`, '_blank')
     };
 
     userLike = (contentId, theme) => {
@@ -94,7 +146,7 @@ class Causerie extends Component {
             .then(res => {
                 const {success, message} = res;
                 if (success) {
-                    this.queryCauserieList({isPage: false});
+                    this.props.queryCauserieList({isPage: false});
                 } else {
                     Message.error(message);
                 }
@@ -102,14 +154,26 @@ class Causerie extends Component {
     };
 
     userComment = () => {
-        Message.warning("评论个锤子，赶紧点赞去")
+        Message.warning("评论个锤子，赶紧点赞去!")
     };
 
-    del = (e) => {
-        Message.info("删除个锤子")
+    userStar = () => {
+        Message.warning("收藏个锤子，赶紧点赞去!")
     };
 
-    getActions = (contentId, likes) => {
+    userShareAlt = () => {
+        Message.warning("分享个锤子，赶紧点赞去!")
+    };
+
+    delCommon = (id, user, name) => {
+        if (user === this.props.jti) {
+            Message.warning("敬请期待")
+        } else {
+            Message.error("仅作者 ~" + name + "~ 可删除！")
+        }
+    };
+
+    getActions = (contentId, authorUser, authorName, likes) => {
         let link = 0, dislike = 0, theme;
         let linkName = '暂无', dislikeName = '暂无';
         const {jti} = this.props;
@@ -148,54 +212,74 @@ class Causerie extends Component {
                 </Tooltip>
                 <span style={{paddingLeft: 8, cursor: 'auto'}}>{dislike}</span>
             </span>,
-            <span key="comment-basic-like-to"> 赞一个 </span>,
             <span key="comment-basic-comment">
                 <Tooltip title="评论">
                       <Icon
                           type="message"
                           onClick={() => this.userComment()}
-                      />
+                      /> 评论
                 </Tooltip>
                 <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}</span>
             </span>,
-            <span key="comment-basic-reply-to"> 评论 </span>,
-            <Tooltip title="删除">
-                <span style={{position: "absolute", right: 0, marginTop: -14}}>
+            <span key="comment-star-comment">
+                <Tooltip title="收藏">
+                      <Icon
+                          type="star"
+                          onClick={() => this.userStar()}
+                      /> 收藏
+                </Tooltip>
+                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}</span>
+            </span>,
+            <span key="comment-share-alt-comment">
+                <Tooltip title="转发">
+                      <Icon
+                          type="share-alt"
+                          onClick={() => this.userShareAlt()}
+                      /> 分享
+                </Tooltip>
+            </span>,
+            <Popconfirm
+                title="确定要删除吗？"
+                onConfirm={() => this.delCommon(contentId, authorUser, authorName)}
+                okText="狠心删除"
+                cancelText="我再想想"
+                trigger={"hover"}
+            >
+                <span
+                    style={{
+                        position: "absolute", right: 0, marginTop: -14,
+                        color: authorUser === jti ? "gray" : "#FF5566"
+                    }}
+                >
                     <Icon
                         type="delete"
-                        onClick={(e) => this.del(e)}
-                        disabled={true}
                     /> 删除
                 </span>
-            </Tooltip>
+            </Popconfirm>
         ];
     };
 
     handleSubmit = () => {
-        if (!this.state.value) {
+        const {value} = this.state;
+        const {jti, queryCauserieList} = this.props;
+        if (!value) {
             return;
         }
 
-        this.setState({
-            submitting: true,
-        });
-
-        setTimeout(() => {
-            this.setState({
-                submitting: false,
-                value: '',
-                comments: [
-                    {
-                        actions: this.getActions([]),
-                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                        author: '锤子哦',
-                        content: <p>{this.state.value}</p>,
-                        datetime: moment().fromNow()
-                    },
-                    ...this.state.comments,
-                ],
+        this.setState({commitLoading: true});
+        commitContent({content: value, user: jti})
+            .then(res => {
+                setTimeout(() => {
+                    this.setState({commitLoading: false, value: ''})
+                }, 1000);
+                const {success, data, message} = res;
+                if (success) {
+                    Message.info(data);
+                    queryCauserieList({isPage: false})
+                } else {
+                    Message.error(message);
+                }
             });
-        }, 1000);
     };
 
     handleChange = e => {
@@ -205,7 +289,10 @@ class Causerie extends Component {
     };
 
     render() {
-        const {comments, submitting, value} = this.state;
+        const {value} = this.state;
+        const {causerieObj} = this.props;
+        let comments = this.getCauserieList(causerieObj.data);
+
         return (
             <div>
                 <Row>
@@ -221,7 +308,7 @@ class Causerie extends Component {
                                 <Editor
                                     onChange={this.handleChange}
                                     onSubmit={this.handleSubmit}
-                                    submitting={submitting}
+                                    loading={this.state.commitLoading}
                                     value={value}
                                 />
                             }
@@ -231,7 +318,10 @@ class Causerie extends Component {
                 <Row>
                     <Col span={15} offset={4}>
                         {
-                            comments.length > 0 && <CommentList comments={comments}/>
+                            comments.length > 0 && <CommentList
+                                comments={comments}
+                                loading={this.state.loading}
+                            />
                         }
                     </Col>
                 </Row>
@@ -240,4 +330,4 @@ class Causerie extends Component {
     }
 }
 
-export default Causerie;
+export default withRouter(Causerie);

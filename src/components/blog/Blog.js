@@ -53,7 +53,7 @@ class Blog extends Component {
                     content={popContent}
                     placement="left"
                 >
-                    <Icon style={{float: "right", marginTop: 12}} type="caret-left"/>
+                    <Icon style={{float: "right", marginTop: 12, marginRight: 25}} type="setting"/>
                 </Popover>
                 <Tabs
                     defaultActiveKey="causerie"
