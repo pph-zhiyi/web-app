@@ -75,6 +75,12 @@ class Blog extends Component {
                             queryCauserieList={queryCauserieList}
                         />
                     </TabPane>
+                    <TabPane tab="影片推荐" key="4">
+                        <h3 style={{textAlign: "center"}}> {text} </h3>
+                    </TabPane>
+                    <TabPane tab="心栖书屋" key="5">
+                        <h3 style={{textAlign: "center"}}> {text} </h3>
+                    </TabPane>
                 </Tabs>
             </div>
         );
