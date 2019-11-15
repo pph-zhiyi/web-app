@@ -27,7 +27,7 @@ class CommentList extends Component {
                         onClick={() => this.openUser(item['authorUser'])}
                     > {item['authorName']} </b>
                 </p>,
-                content: <p>{item['content']}</p>,
+                content: <i><b>{item['content']}</b></i>,
                 datetime: moment(moment(item['commitTime']).format('YYYY-MM-DD')).fromNow()
             });
             return item;
@@ -106,7 +106,7 @@ class CommentList extends Component {
             </span>,
             <Popconfirm
                 title="确定要删除吗？"
-                onConfirm={() => this.delCommon(contentId, authorUser, authorName)}
+                onConfirm={() => this.delCommon(contentId, authorUser, authorName, jti)}
                 okText="狠心删除"
                 cancelText="我再想想"
                 trigger={"hover"}
@@ -154,8 +154,8 @@ class CommentList extends Component {
         Message.warning("分享个锤子，赶紧点赞去!")
     };
 
-    delCommon = (id, user, name) => {
-        if (user === this.props.jti) {
+    delCommon = (id, user, name, jti) => {
+        if (user === jti) {
             Message.warning("敬请期待")
         } else {
             Message.error("仅作者 ~" + name + "~ 可删除！")
