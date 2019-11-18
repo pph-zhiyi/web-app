@@ -194,18 +194,22 @@ class CommentList extends Component {
             deleteContent({id, user})
                 .then(res => {
                     const {success, data, message} = res;
-                    success ? Message.info(data) : Message.info(message);
-                    let da = this.state.data;
-                    this.state.data.map((item, index) => {
-                        if (item.id === id) {
-                            da.splice(index, 1)
-                        }
-                        return item;
-                    });
-                    this.setState({
-                        data: da,
-                        total: this.state.total - 1
-                    })
+                    if (success) {
+                        let da = this.state.data;
+                        this.state.data.map((item, index) => {
+                            if (item.id === id) {
+                                da.splice(index, 1)
+                            }
+                            return item;
+                        });
+                        this.setState({
+                            data: da,
+                            total: this.state.total - 1
+                        });
+                        Message.info(data)
+                    } else {
+                        Message.info(message)
+                    }
                 })
         } else {
             Message.error("仅作者 ~" + name + "~ 可删除！")
@@ -255,7 +259,8 @@ class CommentList extends Component {
     };
 
     render() {
-        const {loading, hasMore, data, jti} = this.state;
+        const {loading, hasMore, data} = this.state;
+        const {jti} = this.props;
         let commons = this.getCauserieList(data);
 
         return (
