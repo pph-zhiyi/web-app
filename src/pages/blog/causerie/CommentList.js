@@ -1,21 +1,40 @@
 import React, {Component} from 'react';
-import {Spin, List, Comment, Icon, Popconfirm, Tooltip, message as Message} from 'antd';
+import {Comment, Divider, Icon, List, message as Message, Popconfirm, Spin, Tooltip} from 'antd';
 import moment from 'moment';
-import {userLike} from '../../../services/causerieService';
+import {deleteContent, queryCauserieList, userLike} from '../../../services/causerieService';
+import InfiniteScroll from 'react-infinite-scroller';
+import './style.css'
+import CommentEditor from "./CommentEditor";
 
 class CommentList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false
+            loading: false,
+            hasMore: true,
+            data: [],
+            total: 0,
+            pageNo: 1,
+            pageSize: 5
         };
     }
 
     componentDidMount() {
-        this.props.queryCauserieList({isPage: false})
+        const {pageNo, pageSize} = this.state;
+        queryCauserieList({pageNo, pageSize})
+            .then((res) => {
+                const {data} = res;
+                this.setState({
+                    data: data.data,
+                    total: data.total
+                })
+            }).catch((e) => {
+            Message.error("请求结果异常");
+        });
     }
 
     getCauserieList = (data) => {
+        // console.log(data)
         let con = [];
         data && data.map(item => {
             con.push({
@@ -135,7 +154,23 @@ class CommentList extends Component {
             .then(res => {
                 const {success, message} = res;
                 if (success) {
-                    this.props.queryCauserieList({isPage: false});
+                    const {pageSize} = this.state;
+                    queryCauserieList({pageNo: 1, pageSize, id: contentId})
+                        .then((res) => {
+                            const {data} = res;
+                            let da = this.state.data;
+                            this.state.data.map((item, index) => {
+                                if (item.id === contentId) {
+                                    da.splice(index, 1, data.data[0])
+                                }
+                                return item;
+                            });
+                            this.setState({
+                                data: da
+                            })
+                        }).catch((e) => {
+                        Message.error("请求结果异常");
+                    });
                 } else {
                     Message.error(message);
                 }
@@ -156,82 +191,114 @@ class CommentList extends Component {
 
     delCommon = (id, user, name, jti) => {
         if (user === jti) {
-            Message.warning("敬请期待")
+            deleteContent({id, user})
+                .then(res => {
+                    const {success, data, message} = res;
+                    success ? Message.info(data) : Message.info(message);
+                    let da = this.state.data;
+                    this.state.data.map((item, index) => {
+                        if (item.id === id) {
+                            da.splice(index, 1)
+                        }
+                        return item;
+                    });
+                    this.setState({
+                        data: da,
+                        total: this.state.total - 1
+                    })
+                })
         } else {
             Message.error("仅作者 ~" + name + "~ 可删除！")
         }
     };
 
+    handleInfiniteOnLoad = () => {
+        let {data, pageNo, total, pageSize} = this.state;
+        let pn = pageNo + 1;
+        this.setState({
+            loading: true,
+        });
+        if (data.length >= total) {
+            Message.warning('我是有底线的.....');
+            this.setState({
+                hasMore: false,
+                loading: false,
+            });
+            return;
+        }
+
+        queryCauserieList({pageNo: pn, pageSize})
+            .then((res) => {
+                this.setState({
+                    data: data.concat(res.data.data),
+                    pageNo: pn,
+                    hasMore: true,
+                    loading: false,
+                })
+            });
+    };
+
+    listHeader = () => {
+        const {total} = this.state;
+        return (
+            <div>
+                <span>共 {total} 项</span>
+                <Icon style={{float: "right", marginTop: 5}} type="menu"/>
+            </div>
+        );
+    };
+
+    addComment = (obj) => {
+        let {data} = this.state;
+        data.splice(0, 0, obj);
+        this.setState({data})
+    };
+
     render() {
-        const {causerieObj} = this.props;
-        const {loading} = this.state;
-        let comments = this.getCauserieList(causerieObj.data);
+        const {loading, hasMore, data, jti} = this.state;
+        let commons = this.getCauserieList(data);
 
         return (
-            <Spin
-                tip="加载中..."
-                indicator={<Icon type="loading" style={{fontSize: 24}} spin/>}
-                spinning={loading}
-            >
-                <List
-                    dataSource={comments}
-                    // header={`共 ${comments.length} ${comments.length > 1 ? '条' : '条'}`}
-                    header=' '
-                    itemLayout="horizontal"
-                    renderItem={
-                        props => <Comment {...props} />
+            <div>
+                <Comment
+                    content={
+                        <CommentEditor
+                            jti={jti}
+                            queryCauserieList={queryCauserieList}
+                            addComment={this.addComment}
+                        />
                     }
-                    pagination={{
-                        onChange: page => {
-                        },
-                        pageSize: 4,
-                        showTotal: (total) => {
-                            return `共 ${total} 条`;
-                        }
-                    }}
                 />
-            </Spin>
+                <div className="demo-infinite-container">
+                    <InfiniteScroll
+                        initialLoad={false}
+                        pageStart={0}
+                        loadMore={this.handleInfiniteOnLoad}
+                        hasMore={!loading && hasMore}
+                        useWindow={false}
+                    >
+                        <List
+                            dataSource={commons}
+                            header={this.listHeader()}
+                            itemLayout="horizontal"
+                            renderItem={
+                                props => <Comment {...props} />
+                            }
+                        >
+                            {loading && hasMore && (
+                                <div className="demo-loading-container">
+                                    <Spin tip="加载中..."
+                                          indicator={<Icon type="loading" style={{fontSize: 24}} spin/>}
+                                    />
+                                </div>
+                            )}
+                            <Divider dashed> 我是有底线的 </Divider>
+                        </List>
+                    </InfiniteScroll>
+                </div>
+            </div>
         );
     }
 }
 
 export default CommentList;
-
-// const IconText = ({type, text}) => (
-//     <span>
-//     <Icon type={type} style={{marginRight: 8}}/>
-//         {text}
-//   </span>
-// );
-// renderItem={item => (
-//     <List.Item
-//         key={item.title}
-//         actions={[
-//             <IconText type="star-o" text="156" key="list-vertical-star-o"/>,
-//             <IconText type="like-o" text="156" key="list-vertical-like-o"/>,
-//             <IconText type="message" text="2" key="list-vertical-message"/>,
-//         ]}
-//         extra={
-//             <div>
-//                 <img
-//                     width={100}
-//                     alt="logo"
-//                     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-//                 />
-//
-//                 <img
-//                     width={100}
-//                     alt="logo"
-//                     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-//                 />
-//             </div>
-//         }
-//     >
-//         <List.Item.Meta
-//             avatar={<Avatar src={item.avatar}/>}
-//             title={<a href={item.href}>{item.title}</a>}
-//             description={item.description}
-//         />
-//         {item.content}
-//     </List.Item>
-// )}

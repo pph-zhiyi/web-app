@@ -68,4 +68,8 @@ api.interceptors.response.use(res => {
     }
 );
 
+export function doPost(action, params) {
+    return api.post(DEFAULT_REQUEST_HOST.concat(action), params, DEFAULT_REQUEST_CONFIGS);
+}
+
 export default api;

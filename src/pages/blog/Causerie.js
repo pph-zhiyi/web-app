@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {Col, Comment, Row} from 'antd';
+import {Col, Row} from 'antd';
 import {withRouter} from 'react-router-dom'
-import CommentList from "./causerie/CommentList2";
-import CommentEditor from "./causerie/CommentEditor";
+import CommentList from "./causerie/CommentList";
 
 class Causerie extends Component {
     constructor(props) {
@@ -15,18 +14,6 @@ class Causerie extends Component {
 
         return (
             <div>
-                <Row>
-                    <Col span={15} offset={4}>
-                        <Comment
-                            content={
-                                <CommentEditor
-                                    jti={jti}
-                                    queryCauserieList={queryCauserieList}
-                                />
-                            }
-                        />
-                    </Col>
-                </Row>
                 <Row>
                     <Col span={15} offset={4}>
                         <CommentList

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Spin, Form, Icon, Input, Button, message as Message} from 'antd';
-import {commitContent} from "../../../services/causerieService";
+import {Button, Form, Icon, Input, message as Message, Spin} from 'antd';
+import {commitContent, queryCauserieList} from "../../../services/causerieService";
 
 const {TextArea} = Input;
 
@@ -21,7 +21,7 @@ class CommentEditor extends Component {
 
     handleSubmit = () => {
         const {value} = this.state;
-        const {jti, queryCauserieList} = this.props;
+        const {jti, addComment} = this.props;
         if (!value) {
             return;
         }
@@ -30,12 +30,15 @@ class CommentEditor extends Component {
         commitContent({content: value, user: jti})
             .then(res => {
                 setTimeout(() => {
-                    this.setState({loading: false, value: ''})
+                    this.setState({loading: false, value: ''});
                 }, 1000);
                 const {success, data, message} = res;
                 if (success) {
-                    Message.info(data);
-                    queryCauserieList({isPage: false})
+                    queryCauserieList({user: jti, pageNo: 1, pageSize: 1})
+                        .then(res => {
+                            addComment(res.data.data[0]);
+                            Message.info(data);
+                        })
                 } else {
                     Message.error(message);
                 }

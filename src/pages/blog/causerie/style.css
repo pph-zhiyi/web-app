@@ -3,6 +3,7 @@
     border-radius: 4px;
     overflow: auto;
     padding: 8px 24px;
+    margin-left: 13px;
     height: 550px;
 }
 .demo-loading-container {
