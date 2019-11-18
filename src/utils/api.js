@@ -34,14 +34,20 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(res => {
         loginStateCheck();
-        if (res.status === 200) {
-            return res.data;
-        } else if (res['headers']['content-disposition']
-            && res['headers']['content-disposition'].indexOf('filename=') > 0) {
-            // 若是文件流，直接返回
-            return res;
-        } else {
-            message.error(res['message']);
+        try {
+            if (res.status === 200) {
+                return res.data;
+            } else if (res['headers']['content-disposition']
+                && res['headers']['content-disposition'].indexOf('filename=') > 0) {
+                // 若是文件流，直接返回
+                return res;
+            } else {
+                message.error(res['message']);
+            }
+        } catch (e) {
+            res['data'] = {data: []};
+            res['status'] = 403;
+            res['message'] = '身份信息验证失败';
         }
     }, err => {
         loginStateCheck();

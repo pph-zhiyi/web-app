@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Col, Comment, Row} from 'antd';
 import {withRouter} from 'react-router-dom'
-import CommentList from "./causerie/CommentList";
+import CommentList from "./causerie/CommentList2";
 import CommentEditor from "./causerie/CommentEditor";
 
 class Causerie extends Component {
