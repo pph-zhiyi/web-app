@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
-import {Comment, Divider, Icon, List, message as Message, Popconfirm, Spin, Tooltip} from 'antd';
+import {
+    Comment, Divider, Icon, List, message as Message, Popconfirm, Spin, Tooltip, Popover,
+    Input, Button
+} from 'antd';
 import moment from 'moment';
 import {deleteContent, queryCauserieList, userLike} from '../../../services/causerieService';
 import InfiniteScroll from 'react-infinite-scroller';
 import './style.css'
 import CommentEditor from "./CommentEditor";
+
+const {TextArea} = Input;
 
 class CommentList extends Component {
     constructor(props) {
@@ -15,7 +20,9 @@ class CommentList extends Component {
             data: [],
             total: 0,
             pageNo: 1,
-            pageSize: 5
+            pageSize: 5,
+            basicVal: '',
+            basicVisible: false
         };
     }
 
@@ -52,6 +59,16 @@ class CommentList extends Component {
             return item;
         });
         return con;
+    };
+
+    setBasicVal = (e) => {
+        this.setState({
+            basicVal: e.target.value
+        })
+    };
+
+    setBasicVisible = (visible) => {
+        this.setState({basicVisible: visible})
     };
 
     getActions = (contentId, authorUser, authorName, likes) => {
@@ -99,12 +116,35 @@ class CommentList extends Component {
             </span>,
             <span key="comment-basic-comment">
                 <Tooltip title="评论">
-                      <Icon
-                          type="message"
-                          onClick={() => this.userComment()}
-                      /> 评论
+                    <Popover
+                        key={contentId}
+                        title={<span>想对 <i style={{color: 'red'}}>{authorName}</i> 说些什么呢.....</span>}
+                        trigger="click"
+                        content={(
+                            <div style={{width: 600}}>
+                                <TextArea
+                                    placeholder="随便写点儿什么吧....."
+                                    rows={5}
+                                    value={this.state.basicVal}
+                                    onChange={(e) => this.setBasicVal(e)}
+                                />
+                                <Button
+                                    style={{float: 'right', top: -30, width: 65, right: 12}}
+                                    type='link'
+                                    icon='message'
+                                    onClick={() => this.userComment(jti)}
+                                > 评论
+                                </Button>
+                            </div>
+                        )}
+                        placement="bottomLeft"
+                    >
+                        <Icon
+                            type="message"
+                        /> 评论
+                    </Popover>
                 </Tooltip>
-                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}</span>
+                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}<Icon type="caret-down" /></span>
             </span>,
             <span key="comment-star-comment">
                 <Tooltip title="收藏">
@@ -177,8 +217,10 @@ class CommentList extends Component {
             })
     };
 
-    userComment = () => {
-        Message.warning("评论个锤子，赶紧点赞去!")
+    userComment = (user) => {
+        const {basicVal} = this.state;
+        Message.warning(`评论个锤子（${basicVal}），赶紧点赞去! ${user}`);
+        this.setState({basicVal: ''})
     };
 
     userStar = () => {
@@ -289,6 +331,7 @@ class CommentList extends Component {
                             renderItem={
                                 props => <Comment {...props} />
                             }
+                            footer={<Divider dashed> 我是有底线的 </Divider>}
                         >
                             {loading && hasMore && (
                                 <div className="demo-loading-container">
@@ -297,7 +340,6 @@ class CommentList extends Component {
                                     />
                                 </div>
                             )}
-                            <Divider dashed> 我是有底线的 </Divider>
                         </List>
                     </InfiniteScroll>
                 </div>
