@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     Comment, Divider, Icon, List, message as Message, Popconfirm, Spin, Tooltip, Popover,
-    Input, Button
+    Input, Button, Avatar
 } from 'antd';
 import moment from 'moment';
 import {deleteContent, queryCauserieList, userLike} from '../../../services/causerieService';
@@ -22,7 +22,7 @@ class CommentList extends Component {
             pageNo: 1,
             pageSize: 5,
             basicVal: '',
-            basicVisible: false
+            arrBasicVisible: []
         };
     }
 
@@ -31,7 +31,12 @@ class CommentList extends Component {
         queryCauserieList({pageNo, pageSize})
             .then((res) => {
                 const {data} = res;
+                let {arrBasicVisible} = this.state;
+                data.data.forEach((item, index) => {
+                    arrBasicVisible[index] = true;
+                });
                 this.setState({
+                    arrBasicVisible,
                     data: data.data,
                     total: data.total
                 })
@@ -41,11 +46,10 @@ class CommentList extends Component {
     }
 
     getCauserieList = (data) => {
-        // console.log(data)
         let con = [];
-        data && data.map(item => {
+        data && data.map((item, index) => {
             con.push({
-                actions: this.getActions(item['id'], item['authorUser'], item['authorName'], item['likes']),
+                actions: this.getActions(item['id'], item['authorUser'], item['authorName'], item['likes'], index),
                 avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
                 author: <p> 作者:
                     <b
@@ -67,11 +71,13 @@ class CommentList extends Component {
         })
     };
 
-    setBasicVisible = (visible) => {
-        this.setState({basicVisible: visible})
+    setBasicVisible = (index, visible) => {
+        let {arrBasicVisible} = this.state;
+        arrBasicVisible[index] = visible;
+        this.setState({arrBasicVisible})
     };
 
-    getActions = (contentId, authorUser, authorName, likes) => {
+    getActions = (contentId, authorUser, authorName, likes, index) => {
         let link = 0, dislike = 0, theme;
         let linkName = '暂无', dislikeName = '暂无';
         const {jti} = this.props;
@@ -137,14 +143,20 @@ class CommentList extends Component {
                                 </Button>
                             </div>
                         )}
-                        placement="bottomLeft"
+                        placement="bottomRight"
                     >
                         <Icon
                             type="message"
                         /> 评论
                     </Popover>
                 </Tooltip>
-                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}<Icon type="caret-down" /></span>
+                <span style={{paddingLeft: 8, cursor: 'auto'}}>
+                    {3}
+                    {this.state.arrBasicVisible[index]
+                        ? <span onClick={() => this.setBasicVisible(index, false,)}><Icon type="caret-down"/> 展开 </span>
+                        : <span onClick={() => this.setBasicVisible(index, true)}><Icon type="caret-up"/> 收起 </span>
+                    }
+                </span>
             </span>,
             <span key="comment-star-comment">
                 <Tooltip title="收藏">
@@ -180,7 +192,55 @@ class CommentList extends Component {
                         type="delete"
                     /> 删除
                 </span>
-            </Popconfirm>
+            </Popconfirm>,
+            <span hidden={this.state.arrBasicVisible[index]}>
+                <List
+                    itemLayout="horizontal"
+                    dataSource={['aa 回复 bb', 'bb 回复 cc', 'cc 回复 aa']}
+                    renderItem={item => (
+                        <List.Item
+                            extra={
+                                <Popover
+                                    key={contentId}
+                                    title={<span>想对 <i style={{color: 'red'}}>{authorName}</i> 说些什么呢.....</span>}
+                                    trigger="click"
+                                    content={(
+                                        <div style={{width: 600}}>
+                                            <TextArea
+                                                placeholder="随便写点儿什么吧....."
+                                                rows={5}
+                                                value={this.state.basicVal}
+                                                onChange={(e) => this.setBasicVal(e)}
+                                            />
+                                            <Button
+                                                style={{float: 'right', top: -30, width: 65, right: 12}}
+                                                type='link'
+                                                icon='message'
+                                                onClick={() => this.userComment(jti)}
+                                            > 评论
+                                            </Button>
+                                        </div>
+                                    )}
+                                    placement="bottom"
+                                >
+                                    <Icon
+                                        type="message"
+                                    /> 评论
+                                </Popover>
+                            }
+                            // actions={['demo']}
+                        >
+                            <List.Item.Meta
+                                style={{width: 800}}
+                                avatar={<Avatar
+                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
+                                title={<a href="https://ant.design">{item}</a>}
+                                description="有空一起玩泥巴"
+                            />
+                        </List.Item>
+                    )}
+                />
+            </span>
         ];
     };
 
@@ -275,12 +335,24 @@ class CommentList extends Component {
 
         queryCauserieList({pageNo: pn, pageSize})
             .then((res) => {
-                this.setState({
-                    data: data.concat(res.data.data),
-                    pageNo: pn,
-                    hasMore: true,
-                    loading: false,
-                })
+                const {data, success, message} = res;
+                if (success) {
+                    let da = this.state.data;
+                    let daLen = da.length;
+                    let {arrBasicVisible} = this.state;
+                    data.data.forEach((item, index) => {
+                        arrBasicVisible[daLen + index] = true;
+                    });
+                    this.setState({
+                        arrBasicVisible,
+                        data: da.concat(data.data),
+                        pageNo: pn,
+                        hasMore: true,
+                        loading: false,
+                    })
+                } else {
+                    Message.error(message)
+                }
             });
     };
 
@@ -295,9 +367,10 @@ class CommentList extends Component {
     };
 
     addComment = (obj) => {
-        let {data} = this.state;
+        let {data, arrBasicVisible} = this.state;
         data.splice(0, 0, obj);
-        this.setState({data})
+        arrBasicVisible[data.length + 1] = true;
+        this.setState({arrBasicVisible, data})
     };
 
     render() {
