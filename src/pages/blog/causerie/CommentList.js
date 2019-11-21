@@ -4,7 +4,7 @@ import {
     Input, Button, Avatar
 } from 'antd';
 import moment from 'moment';
-import {deleteContent, queryCauserieList, userLike} from '../../../services/causerieService';
+import {deleteContent, queryCauserieList, userLike, addComment} from '../../../services/causerieService';
 import InfiniteScroll from 'react-infinite-scroller';
 import './style.css'
 import CommentEditor from "./CommentEditor";
@@ -49,12 +49,11 @@ class CommentList extends Component {
         let con = [];
         data && data.map((item, index) => {
             con.push({
-                actions: this.getActions(item['id'], item['authorUser'], item['authorName'], item['likes'], index),
+                actions: this.getActions(item, index),
                 avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
                 author: <p> 作者:
-                    <b
-                        style={{color: '#FF99FF', cursor: 'pointer'}}
-                        onClick={() => this.openUser(item['authorUser'])}
+                    <b className='author-text-b'
+                       onClick={() => this.openUser(item['authorUser'])}
                     > {item['authorName']} </b>
                 </p>,
                 content: <i><b>{item['content']}</b></i>,
@@ -77,7 +76,11 @@ class CommentList extends Component {
         this.setState({arrBasicVisible})
     };
 
-    getActions = (contentId, authorUser, authorName, likes, index) => {
+    getActions = (item, index) => {
+        let contentId = item['id'];
+        let authorUser = item['authorUser'], authorName = item['authorName'];
+        let likes = item['likes'], comments = item['comments'];
+
         let link = 0, dislike = 0, theme;
         let linkName = '暂无', dislikeName = '暂无';
         const {jti} = this.props;
@@ -105,7 +108,7 @@ class CommentList extends Component {
                     />
                 </Tooltip>
                 <Tooltip title={linkName === '暂无' ? linkName : linkName.substring(1)}>
-                    <span style={{paddingLeft: 8, cursor: 'auto'}}>{link}</span>
+                    <span className='action-basic-span'>{link}</span>
                 </Tooltip>
                 </span>,
             <span key="comment-basic-dislike">
@@ -117,17 +120,17 @@ class CommentList extends Component {
                     />
                 </Tooltip>
                 <Tooltip title={dislikeName === '暂无' ? dislikeName : dislikeName.substring(1)}>
-                    <span style={{paddingLeft: 8, cursor: 'auto'}}>{dislike}</span>
+                    <span className='action-basic-span'>{dislike}</span>
                 </Tooltip>
             </span>,
             <span key="comment-basic-comment">
                 <Tooltip title="评论">
                     <Popover
                         key={contentId}
-                        title={<span>想对 <i style={{color: 'red'}}>{authorName}</i> 说些什么呢.....</span>}
+                        title={<span>想对 <i className='comment-basic-comment-red-i'>{authorName}</i> 说些什么呢.....</span>}
                         trigger="click"
                         content={(
-                            <div style={{width: 600}}>
+                            <div className='comment-basic-comment-div'>
                                 <TextArea
                                     placeholder="随便写点儿什么吧....."
                                     rows={5}
@@ -135,10 +138,10 @@ class CommentList extends Component {
                                     onChange={(e) => this.setBasicVal(e)}
                                 />
                                 <Button
-                                    style={{float: 'right', top: -30, width: 65, right: 12}}
+                                    className='comment-basic-comment-button'
                                     type='link'
                                     icon='message'
-                                    onClick={() => this.userComment(jti)}
+                                    onClick={() => this.userComment(contentId, authorUser, authorUser === jti, item['content'])}
                                 > 评论
                                 </Button>
                             </div>
@@ -150,11 +153,12 @@ class CommentList extends Component {
                         /> 评论
                     </Popover>
                 </Tooltip>
-                <span style={{paddingLeft: 8, cursor: 'auto'}}>
-                    {3}
-                    {this.state.arrBasicVisible[index]
+                <span className='action-basic-span'>
+                    {comments.length}
+                    {comments.length ? this.state.arrBasicVisible[index]
                         ? <span onClick={() => this.setBasicVisible(index, false,)}><Icon type="caret-down"/> 展开 </span>
                         : <span onClick={() => this.setBasicVisible(index, true)}><Icon type="caret-up"/> 收起 </span>
+                        : ""
                     }
                 </span>
             </span>,
@@ -165,7 +169,7 @@ class CommentList extends Component {
                           onClick={() => this.userStar()}
                       /> 收藏
                 </Tooltip>
-                <span style={{paddingLeft: 8, cursor: 'auto'}}>{0}</span>
+                <span className='action-basic-span'>{0}</span>
             </span>,
             <span key="comment-share-alt-comment">
                 <Tooltip title="转发">
@@ -180,13 +184,11 @@ class CommentList extends Component {
                 onConfirm={() => this.delCommon(contentId, authorUser, authorName, jti)}
                 okText="狠心删除"
                 cancelText="我再想想"
-                trigger={"hover"}
+                trigger="hover"
             >
                 <span
-                    style={{
-                        position: "absolute", right: 0, marginTop: -14,
-                        color: authorUser === jti ? "gray" : "#FF5566"
-                    }}
+                    className='action-basic-del'
+                    style={{color: authorUser === jti ? "gray" : "#FF5566"}}
                 >
                     <Icon
                         type="delete"
@@ -194,52 +196,97 @@ class CommentList extends Component {
                 </span>
             </Popconfirm>,
             <span hidden={this.state.arrBasicVisible[index]}>
-                <List
-                    itemLayout="horizontal"
-                    dataSource={['aa 回复 bb', 'bb 回复 cc', 'cc 回复 aa']}
-                    renderItem={item => (
-                        <List.Item
-                            extra={
-                                <Popover
-                                    key={contentId}
-                                    title={<span>想对 <i style={{color: 'red'}}>{authorName}</i> 说些什么呢.....</span>}
-                                    trigger="click"
-                                    content={(
-                                        <div style={{width: 600}}>
-                                            <TextArea
-                                                placeholder="随便写点儿什么吧....."
-                                                rows={5}
-                                                value={this.state.basicVal}
-                                                onChange={(e) => this.setBasicVal(e)}
-                                            />
-                                            <Button
-                                                style={{float: 'right', top: -30, width: 65, right: 12}}
-                                                type='link'
-                                                icon='message'
-                                                onClick={() => this.userComment(jti)}
-                                            > 评论
-                                            </Button>
-                                        </div>
-                                    )}
-                                    placement="bottom"
-                                >
-                                    <Icon
-                                        type="message"
-                                    /> 评论
-                                </Popover>
-                            }
-                            // actions={['demo']}
-                        >
-                            <List.Item.Meta
-                                style={{width: 800}}
-                                avatar={<Avatar
-                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                title={<a href="https://ant.design">{item}</a>}
-                                description="有空一起玩泥巴"
-                            />
-                        </List.Item>
-                    )}
-                />
+                {
+                    comments.length > 0 &&
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={comments}
+                        renderItem={item => (
+                            <List.Item
+                                extra={
+                                    <Popover
+                                        key={item['id']}
+                                        title={
+                                            <span>
+                                                想对
+                                                <i
+                                                    className='comment-basic-comment-red-i'
+                                                >
+                                                    {item['commentName']}
+                                                </i>
+                                                说些什么呢.....
+                                            </span>
+                                        }
+                                        trigger="click"
+                                        content={(
+                                            <div className='comment-basic-comment-div'>
+                                                <TextArea
+                                                    placeholder="随便写点儿什么吧....."
+                                                    rows={5}
+                                                    value={this.state.basicVal}
+                                                    onChange={(e) => this.setBasicVal(e)}
+                                                />
+                                                <Button
+                                                    className='comment-basic-comment-button'
+                                                    type='link'
+                                                    icon='message'
+                                                    onClick={
+                                                        () => this.userComment(contentId, item['commentUser'],
+                                                            jti === item['commentUser'],
+                                                            item['commentContent'])
+                                                    }
+                                                > 评论
+                                                </Button>
+                                            </div>
+                                        )}
+                                        placement="bottom"
+                                    >
+                                        <Icon
+                                            type="message"
+                                        /> 评论
+                                    </Popover>
+                                }
+                                // actions={['demo']}
+                            >
+                                <List.Item.Meta
+                                    className='list-item-meta-width'
+                                    avatar={<Avatar
+                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
+                                    }
+                                    title={
+                                        <span className='list-item-meta-title-span-all'>
+                                            <span
+                                                style={{color: item['isContentAuthor'] ? '#FF99FF' : '#1890ff'}}
+                                            >
+                                                {item['commentName']}{item['isContentAuthor'] ? '(作者)' : ''}
+                                            </span>
+                                            <span> 回复  </span>
+                                            <span
+                                                style={{color: item['authorUser'] === authorUser ? '#FF99FF' : '#1890ff'}}
+                                            >
+                                                {item['authorName']} {item['authorUser'] === authorUser ? '(作者)' : ''}
+                                            </span>
+                                            <Tooltip
+                                                title={item['oldContent']}
+                                            >
+                                                <span
+                                                    className='list-item-meta-title-old-content'
+                                                >
+                                                    {
+                                                        item['oldContent'].length > 15
+                                                            ? item['oldContent'].substring(0, 15).concat("......")
+                                                            : item['oldContent']
+                                                    }
+                                                </span>
+                                            </Tooltip>
+                                        </span>
+                                    }
+                                    description={<i><b>{item['commentContent']}</b></i>}
+                                />
+                            </List.Item>
+                        )}
+                    />
+                }
             </span>
         ];
     };
@@ -277,10 +324,21 @@ class CommentList extends Component {
             })
     };
 
-    userComment = (user) => {
+    userComment = (contentId, authorUser, isContentAuthor, oldContent) => {
         const {basicVal} = this.state;
-        Message.warning(`评论个锤子（${basicVal}），赶紧点赞去! ${user}`);
-        this.setState({basicVal: ''})
+        if (basicVal) {
+            const {jti} = this.props;
+            addComment({contentId, authorUser, commentUser: jti, isContentAuthor, commentContent: basicVal, oldContent})
+                .then(res => {
+                    const {success, data, message} = res;
+                    if (success) {
+                        Message.info(data);
+                        this.setState({basicVal: ''})
+                    } else {
+                        Message.error(message)
+                    }
+                });
+        }
     };
 
     userStar = () => {
@@ -361,7 +419,7 @@ class CommentList extends Component {
         return (
             <div>
                 <span>共 {total} 项</span>
-                <Icon style={{float: "right", marginTop: 5}} type="menu"/>
+                <Icon className='list-header-icon' type="menu"/>
             </div>
         );
     };
@@ -408,8 +466,9 @@ class CommentList extends Component {
                         >
                             {loading && hasMore && (
                                 <div className="demo-loading-container">
-                                    <Spin tip="加载中..."
-                                          indicator={<Icon type="loading" style={{fontSize: 24}} spin/>}
+                                    <Spin
+                                        tip="加载中..."
+                                        indicator={<Icon className='spin-indicator-icon' type="loading" spin/>}
                                     />
                                 </div>
                             )}

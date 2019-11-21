@@ -35,3 +35,12 @@ export function commitContent(params) {
 export function deleteContent(params) {
     return doPost("/causerie/delete", params);
 }
+
+/**
+ * 新增评论
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export function addComment(params) {
+    return doPost("/causerie/add/comment", params);
+}

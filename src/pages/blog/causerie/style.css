@@ -6,9 +6,66 @@
     margin-left: 13px;
     height: 550px;
 }
+
 .demo-loading-container {
     position: absolute;
     bottom: 40px;
     width: 100%;
     text-align: center;
+}
+
+.author-text-b {
+    color: #FF99FF;
+    cursor: pointer;
+}
+
+.action-basic-span {
+    padding-left: 5px;
+    cursor: auto;
+}
+
+.comment-basic-comment-div {
+    width: 600px;
+}
+
+.comment-basic-comment-button {
+    float: right;
+    top: -30px;
+    width: 65px;
+    right: 12px;
+}
+
+.comment-basic-comment-red-i {
+    color: red;
+}
+
+.action-basic-del {
+    position: absolute;
+    right: 0;
+    margin-top: -14px;
+}
+
+.list-item-meta-width {
+    width: 800px;
+}
+
+.list-item-meta-title-span-all {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.list-item-meta-title-old-content {
+    color: #663333;
+    border: 1px dashed gainsboro;
+    margin: 0 5px;
+    padding: 0 5px;
+}
+
+.list-header-icon {
+    float: right;
+    margin-top: 5px;
+}
+
+.spin-indicator-icon {
+    font-size: 24px;
 }
