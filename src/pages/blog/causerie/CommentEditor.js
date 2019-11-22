@@ -27,22 +27,23 @@ class CommentEditor extends Component {
         }
 
         this.setState({loading: true});
-        commitContent({content: value, user: jti})
-            .then(res => {
-                setTimeout(() => {
-                    this.setState({loading: false, value: ''});
-                }, 1000);
-                const {success, data, message} = res;
-                if (success) {
-                    queryCauserieList({user: jti, pageNo: 1, pageSize: 1})
-                        .then(res => {
-                            addComment(res.data.data[0]);
-                            Message.info(data);
-                        })
-                } else {
-                    Message.error(message);
-                }
-            });
+        commitContent({content: value, user: jti}).then(res => {
+            setTimeout(() => {
+                this.setState({loading: false, value: ''});
+            }, 1000);
+            const {success, data, message} = res;
+            if (success) {
+                queryCauserieList({user: jti, pageNo: 1, pageSize: 1})
+                    .then(res => {
+                        addComment(res.data.data[0]);
+                        Message.info(data);
+                    })
+            } else {
+                Message.error(message);
+            }
+        }).catch((e) => {
+            Message.error("请求结果异常");
+        });
     };
 
     render() {

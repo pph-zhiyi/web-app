@@ -28,19 +28,18 @@ class CommentList extends Component {
 
     componentDidMount() {
         const {pageNo, pageSize} = this.state;
-        queryCauserieList({pageNo, pageSize})
-            .then((res) => {
-                const {data} = res;
-                let {arrBasicVisible} = this.state;
-                data.data.forEach((item, index) => {
-                    arrBasicVisible[index] = true;
-                });
-                this.setState({
-                    arrBasicVisible,
-                    data: data.data,
-                    total: data.total
-                })
-            }).catch((e) => {
+        queryCauserieList({pageNo, pageSize}).then((res) => {
+            const {data} = res;
+            let {arrBasicVisible} = this.state;
+            data.data.forEach((item, index) => {
+                arrBasicVisible[index] = true;
+            });
+            this.setState({
+                arrBasicVisible,
+                data: data.data,
+                total: data.total
+            })
+        }).catch((e) => {
             Message.error("请求结果异常");
         });
     }
@@ -297,52 +296,57 @@ class CommentList extends Component {
     };
 
     userLike = (contentId, theme) => {
-        userLike({contentId: contentId, user: this.props.jti, like: theme})
-            .then(res => {
-                const {success, message} = res;
-                if (success) {
-                    const {pageSize} = this.state;
-                    queryCauserieList({pageNo: 1, pageSize, id: contentId})
-                        .then((res) => {
-                            const {data} = res;
-                            let da = this.state.data;
-                            this.state.data.map((item, index) => {
-                                if (item.id === contentId) {
-                                    da.splice(index, 1, data.data[0])
-                                }
-                                return item;
-                            });
-                            this.setState({
-                                data: da
-                            })
-                        }).catch((e) => {
-                        Message.error("请求结果异常");
+        userLike({contentId: contentId, user: this.props.jti, like: theme}).then(res => {
+            const {success, message} = res;
+            if (success) {
+                const {pageSize} = this.state;
+                queryCauserieList({pageNo: 1, pageSize, id: contentId}).then((res) => {
+                    const {data} = res;
+                    let da = this.state.data;
+                    this.state.data.map((item, index) => {
+                        if (item.id === contentId) {
+                            da.splice(index, 1, data.data[0])
+                        }
+                        return item;
                     });
-                } else {
-                    Message.error(message);
-                }
-            })
+                    this.setState({
+                        data: da
+                    })
+                }).catch((e) => {
+                    Message.error("请求结果异常");
+                });
+            } else {
+                Message.error(message);
+            }
+        })
     };
 
     userComment = (contentId, authorUser, isContentAuthor, oldContent, index) => {
         const {basicVal} = this.state;
         if (basicVal) {
             const {jti} = this.props;
-            addComment({contentId, authorUser, commentUser: jti, isContentAuthor, commentContent: basicVal, oldContent})
-                .then(res => {
-                    const {success, data, message} = res;
-                    if (success) {
-                        Message.info(data);
-                        queryCauserieList({id: contentId, pageNo: 1, pageSize: 1})
-                            .then(res => {
-                                let {data, arrBasicVisible} = this.state;
-                                data.splice(index, 1, res.data.data[0]);
-                                this.setState({arrBasicVisible, data, basicVal: ''});
-                            })
-                    } else {
-                        Message.error(message)
-                    }
-                });
+            addComment({
+                contentId,
+                authorUser,
+                commentUser: jti,
+                isContentAuthor,
+                commentContent: basicVal,
+                oldContent
+            }).then(res => {
+                const {success, data, message} = res;
+                if (success) {
+                    Message.info(data);
+                    queryCauserieList({id: contentId, pageNo: 1, pageSize: 1}).then(res => {
+                        let {data, arrBasicVisible} = this.state;
+                        data.splice(index, 1, res.data.data[0]);
+                        this.setState({arrBasicVisible, data, basicVal: ''});
+                    }).catch((e) => {
+                        Message.error("请求结果异常");
+                    });
+                } else {
+                    Message.error(message)
+                }
+            });
         }
     };
 
@@ -356,26 +360,27 @@ class CommentList extends Component {
 
     delCommon = (id, user, name, jti) => {
         if (user === jti) {
-            deleteContent({id, user})
-                .then(res => {
-                    const {success, data, message} = res;
-                    if (success) {
-                        let da = this.state.data;
-                        this.state.data.map((item, index) => {
-                            if (item.id === id) {
-                                da.splice(index, 1)
-                            }
-                            return item;
-                        });
-                        this.setState({
-                            data: da,
-                            total: this.state.total - 1
-                        });
-                        Message.info(data)
-                    } else {
-                        Message.info(message)
-                    }
-                })
+            deleteContent({id, user}).then(res => {
+                const {success, data, message} = res;
+                if (success) {
+                    let da = this.state.data;
+                    this.state.data.map((item, index) => {
+                        if (item.id === id) {
+                            da.splice(index, 1)
+                        }
+                        return item;
+                    });
+                    this.setState({
+                        data: da,
+                        total: this.state.total - 1
+                    });
+                    Message.info(data)
+                } else {
+                    Message.info(message)
+                }
+            }).catch((e) => {
+                Message.error("请求结果异常");
+            });
         } else {
             Message.error("仅作者 ~" + name + "~ 可删除！")
         }
@@ -396,27 +401,28 @@ class CommentList extends Component {
             return;
         }
 
-        queryCauserieList({pageNo: pn, pageSize})
-            .then((res) => {
-                const {data, success, message} = res;
-                if (success) {
-                    let da = this.state.data;
-                    let daLen = da.length;
-                    let {arrBasicVisible} = this.state;
-                    data.data.forEach((item, index) => {
-                        arrBasicVisible[daLen + index] = true;
-                    });
-                    this.setState({
-                        arrBasicVisible,
-                        data: da.concat(data.data),
-                        pageNo: pn,
-                        hasMore: true,
-                        loading: false,
-                    })
-                } else {
-                    Message.error(message)
-                }
-            });
+        queryCauserieList({pageNo: pn, pageSize}).then((res) => {
+            const {data, success, message} = res;
+            if (success) {
+                let da = this.state.data;
+                let daLen = da.length;
+                let {arrBasicVisible} = this.state;
+                data.data.forEach((item, index) => {
+                    arrBasicVisible[daLen + index] = true;
+                });
+                this.setState({
+                    arrBasicVisible,
+                    data: da.concat(data.data),
+                    pageNo: pn,
+                    hasMore: true,
+                    loading: false,
+                })
+            } else {
+                Message.error(message)
+            }
+        }).catch((e) => {
+            Message.error("请求结果异常");
+        });
     };
 
     listHeader = () => {
