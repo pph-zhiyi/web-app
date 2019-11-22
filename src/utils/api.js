@@ -7,14 +7,7 @@ let api = axios.create({
     transformRequest: [data => JSON.stringify(data)]
 });
 
-export const {token} = localStorage;
 export const DEFAULT_REQUEST_HOST = 'http://localhost:8888';
-export const DEFAULT_REQUEST_CONFIGS = {
-    headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        'token': token
-    }
-};
 
 export function getRequestConf(token) {
     return {
@@ -68,8 +61,53 @@ api.interceptors.response.use(res => {
     }
 );
 
+/**
+ * GET
+ *
+ * @param action
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export function doGet(action, params) {
+    let url = DEFAULT_REQUEST_HOST.concat(action && !action.startsWith("/") ? "/" : '', action);
+    if (params) {
+        let flag = 1;
+        Object.keys(params).map(key => {
+            url += flag === 1 ? "?" : "&";
+            url += key.concat("=", params[key]);
+            flag++;
+            return key;
+        });
+    }
+    return api.get(
+        url,
+        getRequestConf(localStorage.token)
+    );
+}
+
+/**
+ * POST
+ *
+ * @param action
+ * @param params
+ * @returns {Promise<AxiosResponse<T>>}
+ */
 export function doPost(action, params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat(action), params, DEFAULT_REQUEST_CONFIGS);
+    return api.post(
+        DEFAULT_REQUEST_HOST.concat(action && !action.startsWith("/") ? "/" : '', action),
+        params,
+        getRequestConf(localStorage.token)
+    );
+}
+
+export function Pro(action, params) {
+    return new Promise(function (resolve, reject) {
+        doPost(action, params).then(function (ret) {
+            resolve(ret);
+        }).catch(function (err) {
+            reject(err);
+        })
+    })
 }
 
 export default api;

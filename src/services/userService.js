@@ -1,4 +1,4 @@
-import api, {DEFAULT_REQUEST_HOST, getRequestConf} from '../utils/api';
+import {doPost} from '../utils/api';
 
 /**
  * 获取用户列表信息
@@ -6,7 +6,7 @@ import api, {DEFAULT_REQUEST_HOST, getRequestConf} from '../utils/api';
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function queryUserList(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/user/query'), params, getRequestConf(localStorage.token));
+    return doPost('/user/query', params);
 }
 
 /**
@@ -15,7 +15,7 @@ export function queryUserList(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function addUser(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/user/create'), params, getRequestConf(localStorage.token));
+    return doPost('/user/create', params);
 }
 
 /**
@@ -24,7 +24,7 @@ export function addUser(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function editUser(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/user/update'), params, getRequestConf(localStorage.token));
+    return doPost('/user/update', params);
 }
 
 /**
@@ -33,7 +33,7 @@ export function editUser(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function deleteUser(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/user/delete'), params, getRequestConf(localStorage.token));
+    return doPost('/user/delete', params);
 }
 
 /**
@@ -42,8 +42,7 @@ export function deleteUser(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function queryLoginLogByUser(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/login/log/by/user'), params,
-        getRequestConf(localStorage.token));
+    return doPost('/login/query/login/log/by/user', params);
 }
 
 /**
@@ -52,5 +51,5 @@ export function queryLoginLogByUser(params) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export function queryUserLoginCount(params) {
-    return api.post(DEFAULT_REQUEST_HOST.concat('/login/query/user/login/count'), params, getRequestConf(localStorage.token));
+    return doPost('/login/query/user/login/count', params);
 }

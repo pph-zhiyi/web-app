@@ -141,7 +141,7 @@ class CommentList extends Component {
                                     className='comment-basic-comment-button'
                                     type='link'
                                     icon='message'
-                                    onClick={() => this.userComment(contentId, authorUser, authorUser === jti, item['content'])}
+                                    onClick={() => this.userComment(contentId, authorUser, authorUser === jti, item['content'], index)}
                                 > 评论
                                 </Button>
                             </div>
@@ -233,7 +233,7 @@ class CommentList extends Component {
                                                     onClick={
                                                         () => this.userComment(contentId, item['commentUser'],
                                                             jti === item['commentUser'],
-                                                            item['commentContent'])
+                                                            item['commentContent'], index)
                                                     }
                                                 > 评论
                                                 </Button>
@@ -324,7 +324,7 @@ class CommentList extends Component {
             })
     };
 
-    userComment = (contentId, authorUser, isContentAuthor, oldContent) => {
+    userComment = (contentId, authorUser, isContentAuthor, oldContent, index) => {
         const {basicVal} = this.state;
         if (basicVal) {
             const {jti} = this.props;
@@ -333,7 +333,12 @@ class CommentList extends Component {
                     const {success, data, message} = res;
                     if (success) {
                         Message.info(data);
-                        this.setState({basicVal: ''})
+                        queryCauserieList({id: contentId, pageNo: 1, pageSize: 1})
+                            .then(res => {
+                                let {data, arrBasicVisible} = this.state;
+                                data.splice(index, 1, res.data.data[0]);
+                                this.setState({arrBasicVisible, data, basicVal: ''});
+                            })
                     } else {
                         Message.error(message)
                     }
@@ -383,7 +388,7 @@ class CommentList extends Component {
             loading: true,
         });
         if (data.length >= total) {
-            Message.warning('我是有底线的.....');
+            Message.info('我是有底线的.....');
             this.setState({
                 hasMore: false,
                 loading: false,
