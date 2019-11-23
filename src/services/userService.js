@@ -1,4 +1,4 @@
-import {doPost} from '../utils/api';
+import {doPost, doGet} from '../utils/api';
 
 /**
  * 获取用户列表信息
@@ -52,4 +52,8 @@ export function queryLoginLogByUser(params) {
  */
 export function queryUserLoginCount(params) {
     return doPost('/login/query/user/login/count', params);
+}
+
+export function queryUsers() {
+    return doGet('/user/query/users');
 }
