@@ -8,7 +8,6 @@ import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
 
 const {RangePicker} = DatePicker;
-let chart;
 
 class UserCharts extends Component {
     constructor(props) {
@@ -20,12 +19,6 @@ class UserCharts extends Component {
     }
 
     componentDidMount() {
-        chart = new G2.Chart({
-            container: 'c1',
-            forceFit: true,
-            height: 500,
-            padding: [60, 20, 40, 60]
-        });
         let startTime = new Date(moment().startOf('day')).getTime();
         let endTime = new Date(moment().endOf('day')).getTime();
         this.getDataList({startTime, endTime});
@@ -40,6 +33,7 @@ class UserCharts extends Component {
         }).catch((e) => {
             message.error("请求结果异常");
         });
+
     }
 
     getDataList = (params) => {
@@ -53,7 +47,7 @@ class UserCharts extends Component {
                 message.error(res.message);
             }
         }).catch((e) => {
-            message.error("请求结果异常");
+            message.error("请求结果异常; error: " + e);
         });
     };
 
@@ -82,37 +76,40 @@ class UserCharts extends Component {
             'hehehe': 'https://zos.alipayobjects.com/rmsportal/mYhpaYHyHhjYcQf.png',
         };
 
-        chart.destroy();
+        this.c1 && this.c1.destroy();
 
-        chart = new G2.Chart({
+        this.c1 = new G2.Chart({
             container: 'c1',
             forceFit: true,
             height: 500,
             padding: [60, 20, 40, 60]
         });
 
-        chart.source(this.state.userLoginCountList, {
+        this.c1.source(this.state.userLoginCountList, {
             vote: {
                 min: 0
             }
         });
 
-        chart.legend(false);
+        this.c1.legend(false);
 
-        chart.axis('vote', {
+        this.c1.axis('vote', {
             labels: null,
             title: null,
             line: null,
             tickLine: null
         });
 
-        chart.interval().position('user*loginCount').color('user', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
+        this.c1.interval()
+            .position('user*loginCount')
+            .color('user', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd'])
+            .size(80);
 
-        chart.point().position('user*loginCount').size(60).shape('user', function (name) {
+        this.c1.point().position('user*loginCount').size(60).shape('user', function (name) {
             return ['image', imageMap[name]];
         });
 
-        chart.render();
+        this.c1.render();
     };
 
     onChange = (value, dateString) => {
@@ -147,7 +144,9 @@ class UserCharts extends Component {
                         defaultValue={[moment().startOf('day'), moment().endOf('day')]}
                     />
                 </LocaleProvider>
-                <div id="c1"/>
+                <div>
+                    <div id="c1"/>
+                </div>
             </Fragment>
         );
     }
