@@ -1,13 +1,24 @@
-import React, {Fragment, Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {message, notification, Icon} from 'antd';
+import {Icon, message, notification} from 'antd';
 import './Login.css';
 import * as loginService from "../../services/loginService";
 import LoginForm from "../../pages/login/LoginForm";
+import RegisterForm from "../../pages/login/RegisterForm";
 import LoginInform from "../../pages/login/LoginInform";
 import moment from "moment";
 
 class Login extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            registerVisible: false
+        };
+    }
+
+    changeRegisterVisible = (v) => {
+        this.setState({registerVisible: v});
+    };
 
     componentWillReceiveProps(nextProps, nextContext) {
         const {isExists, user, msg} = nextProps;
@@ -40,6 +51,11 @@ class Login extends Component {
             <Fragment>
                 <LoginForm
                     login={this.props.login}
+                    changeRegisterVisible={this.changeRegisterVisible}
+                />
+                <RegisterForm
+                    visible={this.state.registerVisible}
+                    changeRegisterVisible={this.changeRegisterVisible}
                 />
                 <LoginInform/>
             </Fragment>

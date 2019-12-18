@@ -67,7 +67,7 @@ class LoginForm extends React.Component {
                                     </Button>
                                     <Button onClick={() => this.props.form.resetFields()} className="login-form-button">
                                         清空
-                                    </Button> 或者 <a href="/"> 立即注册！ </a>
+                                    </Button> 或者 <span style={{color: "#1890ff"}} onClick={() => this.props.changeRegisterVisible(true)}> 立即注册！ </span>
                                 </Form.Item>
                             </Form>
                         </Col>
