@@ -231,7 +231,7 @@ class CommentList extends Component {
                                                     icon='message'
                                                     onClick={
                                                         () => this.userComment(contentId, item['commentUser'],
-                                                            jti === item['commentUser'],
+                                                            jti === authorUser,
                                                             item['commentContent'], index)
                                                     }
                                                 > 评论
@@ -254,17 +254,31 @@ class CommentList extends Component {
                                     }
                                     title={
                                         <span className='list-item-meta-title-span-all'>
-                                            <span
-                                                style={{color: item['isContentAuthor'] ? '#FF99FF' : '#1890ff'}}
-                                            >
-                                                {item['commentName']}{item['isContentAuthor'] ? '(作者)' : ''}
-                                            </span>
-                                            <span> 回复  </span>
-                                            <span
-                                                style={{color: item['authorUser'] === authorUser ? '#FF99FF' : '#1890ff'}}
-                                            >
-                                                {item['authorName']} {item['authorUser'] === authorUser ? '(作者)' : ''}
-                                            </span>
+                                            {
+                                                item['isContentAuthor'] && authorUser === item['authorUser']
+                                                    ? (
+                                                        <span
+                                                            style={{color: item['isContentAuthor'] ? '#FF99FF' : '#1890ff'}}
+                                                        >
+                                                            {item['commentName']}{item['isContentAuthor'] ? '(作者)' : ''}
+                                                        </span>
+                                                    )
+                                                    : (
+                                                        <span>
+                                                            <span
+                                                                style={{color: item['isContentAuthor'] ? '#FF99FF' : '#1890ff'}}
+                                                            >
+                                                                {item['commentName']}{item['isContentAuthor'] ? '(作者)' : ''}
+                                                            </span>
+                                                            <span> 回复  </span>
+                                                            <span
+                                                                style={{color: item['authorUser'] === authorUser ? '#FF99FF' : '#1890ff'}}
+                                                            >
+                                                                {item['authorName']} {item['authorUser'] === authorUser ? '(作者)' : ''}
+                                                            </span>
+                                                        </span>
+                                                    )
+                                            }
                                             <Tooltip
                                                 title={item['oldContent']}
                                             >
