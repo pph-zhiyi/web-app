@@ -15,7 +15,8 @@ export default class App extends Component {
         this.state = {
             theme: "light",
             swiColor: "#DACD77",
-            collapsed: this.props.history.location.pathname === '/app/blog/index'
+            // collapsed: this.props.history.location.pathname === '/app/blog/index'
+            collapsed: true
         };
     }
 
@@ -51,7 +52,7 @@ export default class App extends Component {
 
     render() {
         const pathname = this.props.history.location.pathname;
-        const smk = pathname.split('/')[2];
+        // const smk = pathname.split('/')[2];
 
         return (
             <div>
@@ -66,7 +67,7 @@ export default class App extends Component {
                         <div className="logo"/>
                         <Menu
                             theme={this.state.theme}
-                            defaultOpenKeys={[smk ? smk : 'user']}
+                            // defaultOpenKeys={[smk ? smk : 'user']}
                             mode="inline"
                             selectedKeys={[pathname]}
                         >
