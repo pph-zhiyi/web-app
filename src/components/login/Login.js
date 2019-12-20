@@ -33,7 +33,11 @@ class Login extends Component {
                                 <br/>
                                 上次登录时间：
                                 <b style={{color: '#1890ff'}}>
-                                    {moment(res.data.entryTime).format('YYYY-MM-DD HH:mm:ss')}
+                                    {
+                                        res.data
+                                            ? moment(res.data.entryTime).format('YYYY-MM-DD HH:mm:ss')
+                                            : "第一次登录"
+                                    }
                                 </b>
                             </div>,
                             icon: <Icon type="smile" style={{color: '#108ee9'}}/>

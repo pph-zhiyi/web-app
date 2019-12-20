@@ -197,7 +197,7 @@ export default class App extends Component {
                         })
                     )
                 }
-                <Redirect from="/app" to='/app/user/list'/>
+                <Redirect from="/app" to='/app/blog/index'/>
             </Switch>
         );
     };

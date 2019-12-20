@@ -5,12 +5,27 @@ import UserCharts from "../components/user/UserCharts";
 import AntdDatePicker from '../components/demo/AntdDatePicker';
 import Demo from "../pages/Demo";
 import Blog from '../components/blog/Blog';
+import Stack from '../components/stack/Stack';
 
 /**
  * 页面路由配置
  * @type {*[]}
  */
 export const routerConfigs = [
+    {
+        key: "blog",
+        title: <span>
+            <Icon type="fire"/>
+            <span> Blog </span>
+        </span>,
+        mis: [
+            {
+                key: "/app/blog/index",
+                content: "我的博客",
+                component: Blog
+            }
+        ]
+    },
     {
         key: "user",
         title: <span>
@@ -32,6 +47,20 @@ export const routerConfigs = [
                 key: "/app/user/antd/date",
                 content: "DatePicker",
                 component: AntdDatePicker
+            }
+        ]
+    },
+    {
+        key: "stack",
+        title: <span>
+            <Icon type="monitor"/>
+            <span> Stack </span>
+        </span>,
+        mis: [
+            {
+                key: "/app/stack/index",
+                content: "堆栈监控",
+                component: Stack
             }
         ]
     },
@@ -70,20 +99,6 @@ export const routerConfigs = [
                 key: "/app/file/d1",
                 content: "我是第一个",
                 component: Demo
-            }
-        ]
-    },
-    {
-        key: "blog",
-        title: <span>
-            <Icon type="fire"/>
-            <span> Blog </span>
-        </span>,
-        mis: [
-            {
-                key: "/app/blog/index",
-                content: "我的博客",
-                component: Blog
             }
         ]
     }
