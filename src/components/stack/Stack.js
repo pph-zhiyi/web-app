@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, List, message as Message, Icon} from 'antd';
+import {Card, Icon, List, message as Message} from 'antd';
 
 import * as causerieService from "../../services/stackService";
 
@@ -34,7 +34,9 @@ class Blog extends Component {
             <List
                 header={
                     <div style={{textAlign: "right"}}>
-                        <Icon type="loading"/> 刷新
+                        <span style={{color: "#1890ff", cursor: "pointer"}}>
+                            <Icon type="loading"/> 刷新
+                        </span>
                     </div>
                 }
                 style={{margin: 50}}
