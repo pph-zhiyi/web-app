@@ -4,6 +4,7 @@ import User from '../components/user/User';
 import UserCharts from "../components/user/UserCharts";
 import AntdDatePicker from '../components/demo/AntdDatePicker';
 import Demo from "../pages/Demo";
+import Top from "../pages/Top/Top";
 import Blog from '../components/blog/Blog';
 import Stack from '../components/stack/Stack';
 
@@ -89,16 +90,16 @@ export const routerConfigs = [
         ]
     },
     {
-        key: "file",
+        key: "bank",
         title: <span>
-            <Icon type="file"/>
-            <span> File </span>
+            <Icon type="bank"/>
+            <span> Top </span>
         </span>,
         mis: [
             {
-                key: "/app/file/d1",
-                content: "我是第一个",
-                component: Demo
+                key: "/app/bank/d1",
+                content: "Top产品详情",
+                component: Top
             }
         ]
     }
