@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Drawer, Form, Icon, Input} from 'antd';
 import XLSX from 'xlsx';
+import moment from "moment";
 
 const {TextArea} = Input;
 
@@ -109,8 +110,8 @@ class ProductDetails extends Component {
     downloadExl = (json, type) => {
         let tmpdata = json[0];
         json.unshift({});
-        var keyMap = []; //获取keys
-        for (var k in tmpdata) {
+        let keyMap = []; //获取keys
+        for (let k in tmpdata) {
             keyMap.push(k);
             json[0][k] = k;
         }
@@ -122,11 +123,11 @@ class ProductDetails extends Component {
         }))).reduce((prev, next) => prev.concat(next)).forEach((v, i) => tmpData[v.position] = {
             v: v.v
         });
-        var outputPos = Object.keys(tmpData); //设置区域,比如表格从A1到D10
-        var tmpWB = {
-            SheetNames: ['mySheet'], //保存的表标题
+        let outputPos = Object.keys(tmpData); //设置区域,比如表格从A1到D10
+        let tmpWB = {
+            SheetNames: ['TOP ELECTRIC PDUs'], //保存的表标题
             Sheets: {
-                'mySheet': Object.assign({},
+                'TOP ELECTRIC PDUs': Object.assign({},
                     tmpData, //内容
                     {
                         '!ref': outputPos[0] + ':' + outputPos[outputPos.length - 1] //设置填充区域
@@ -145,9 +146,9 @@ class ProductDetails extends Component {
     };
 
     s2ab = (s) => { //字符串转字符流
-        var buf = new ArrayBuffer(s.length);
-        var view = new Uint8Array(buf);
-        for (var i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        let buf = new ArrayBuffer(s.length);
+        let view = new Uint8Array(buf);
+        for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     };
     // 将指定的自然数转换为26进制表示。映射关系：[0-25] -> [A-Z]。
@@ -211,6 +212,18 @@ class ProductDetails extends Component {
         );
     };
 
+    makeExcelData = (data) => {
+        let result = [];
+        let obj = {};
+        for (let key in data) {
+            if (key === "id" || key === "gmtCreate" || key === "gmtModify")
+                continue;
+            obj[zh[key]] = data[key] ? data[key] : "暂无";
+        }
+        result.push(obj);
+        return result;
+    };
+
     render() {
         const formItemLayout = {
             labelCol: {span: 6},
@@ -219,26 +232,8 @@ class ProductDetails extends Component {
         const {getFieldDecorator} = this.props.form;
         const {data} = this.props;
 
-        let obj = [{ //测试数据
-            "活动名称": "abcd活动",
-            "活动开始时间": "1/2/19",
-            "活动结束时间": "1/2/19",
-            "活动地点": "123",
-            "渠道": "自媒体",
-            "1月": "20.00",
-            "2月": "30.00",
-            "3月": "40.00",
-            "4月": "20.00",
-            "5月": "20.00",
-            "6月": "20.00",
-            "7月": "20.00",
-            "8月": "20.00",
-            "9月": "20.00",
-            "10月": "20.00",
-            "11月": "20.00",
-            "12月": "20.00"
-        }];
-
+        let obj = this.makeExcelData(data);
+        let excelName = data['model'] + "_" + moment(new Date()).format('YYYY-MM-DD@HH-mm-ss') + ".xlsx";
 
         return (
             <div>
@@ -282,12 +277,11 @@ class ProductDetails extends Component {
                             icon="download"
                             onClick={this.downloadExl(obj)}
                             type="primary"
-                            download={'demo.xlsx'}
                         >
                             <a
                                 style={{color: "white"}}
                                 href={href}
-                                download={'demo.xlsx'}
+                                download={excelName}
                             > 下载 </a>
                         </Button>
                     </div>
