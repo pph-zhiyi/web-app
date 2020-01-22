@@ -26,10 +26,14 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(res => {
-        loginStateCheck();
         try {
             if (res.status === 200) {
-                return res.data;
+                let {data} = res;
+                if (data.code === 200) {
+                    return data;
+                } else if (data.code === 401) {
+                    loginStateCheck();
+                }
             } else if (res['headers']['content-disposition']
                 && res['headers']['content-disposition'].indexOf('filename=') > 0) {
                 // 若是文件流，直接返回
@@ -38,12 +42,9 @@ api.interceptors.response.use(res => {
                 message.error(res['message']);
             }
         } catch (e) {
-            res['data'] = {data: []};
-            res['status'] = 403;
-            res['message'] = '身份信息验证失败';
+            message.error("请求服务器异常");
         }
     }, err => {
-        loginStateCheck();
         try {
             const response = err.response;
             if (response.status === 504 || response.status === 404) {
