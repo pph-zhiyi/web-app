@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Icon, List, message as Message} from 'antd';
+import {Card, Icon, List, message as Message, Spin} from 'antd';
 
 import * as causerieService from "../../services/stackService";
 
@@ -7,36 +7,57 @@ class Blog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            stacks: []
+            stacks: [],
+            loading: false
         };
     }
 
     componentDidMount() {
+        this.query();
+    }
+
+    query = () => {
+        this.setState({loading: true});
         causerieService.get()
             .then(res => {
                 const {success, data, message} = res;
                 if (success) {
-                    this.setState({
-                        stacks: data
-                    })
+                    setTimeout(
+                        () => {
+                            this.setState({
+                                loading: false,
+                                stacks: data
+                            })
+                        },
+                        1000)
                 } else {
+                    this.setState({loading: false});
                     Message.error(message);
                 }
-            }).catch(e => {
-            Message.error("请求异常！");
-        })
-    }
+            })
+    };
 
     render() {
-        const {stacks} = this.state;
+        const {stacks, loading} = this.state;
 
         return (<div>
             <List
+                loading={loading}
                 header={
                     <div style={{textAlign: "right"}}>
-                        <span style={{color: "#1890ff", cursor: "pointer"}}>
-                            <Icon type="loading"/> 刷新
-                        </span>
+                        {
+                            loading
+                                ? <Spin
+                                    tip="加载中..."
+                                    indicator={<Icon style={{fontSize: 14}} type="loading" spin/>}
+                                />
+                                : <span
+                                    className='blueBtn'
+                                    onClick={this.query}
+                                >
+                                    <Icon type="redo"/> 刷新
+                                </span>
+                        }
                     </div>
                 }
                 style={{margin: 50}}

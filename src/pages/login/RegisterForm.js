@@ -44,7 +44,7 @@ class RegisterForm extends React.Component {
                     onClose={() => this.props.changeRegisterVisible(false)}
                     visible={this.props.visible}
                 >
-                    <Form layout="vertical" hideRequiredMark>
+                    <Form layout="vertical">
                         <Form.Item {...formItemLayout} label="用户名 / 账号:">
                             {
                                 getFieldDecorator('user', {

@@ -28,12 +28,18 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(res => {
         try {
             if (res.status === 200) {
-                let {data} = res;
+                let result;
+                const {data} = res;
                 if (data.code === 200) {
-                    return data;
+                    result = data;
                 } else if (data.code === 401) {
                     loginStateCheck();
+                } else {
+                    result = data;
+                    let es = result["message"].split("Error message: ");
+                    result["message"] = es && es.length > 1 && es[1] !== 'null' ? es[1] : result["message"];
                 }
+                return result;
             } else if (res['headers']['content-disposition']
                 && res['headers']['content-disposition'].indexOf('filename=') > 0) {
                 // 若是文件流，直接返回

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as causerieService from "../../services/causerieService";
 import {CAUSERIE_QUERY_LIST,} from "../../store/actionTypes";
 import Causerie from "../../pages/blog/Causerie";
+import Movies from "../../pages/blog/Movies";
 import jwt_decode from 'jwt-decode'
 
 const {TabPane} = Tabs;
@@ -76,7 +77,7 @@ class Blog extends Component {
                         />
                     </TabPane>
                     <TabPane tab="影片推荐" key="4">
-                        <h3 style={{textAlign: "center"}}> {text} </h3>
+                        <Movies />
                     </TabPane>
                     <TabPane tab="心栖书屋" key="5">
                         <h3 style={{textAlign: "center"}}> {text} </h3>
