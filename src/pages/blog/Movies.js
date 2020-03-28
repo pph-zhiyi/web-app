@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Col, Empty, Row} from 'antd';
 import {withRouter} from 'react-router-dom'
+import NowPlaying from './movies/NowPlaying'
 
 class Movies extends Component {
     constructor(props) {
@@ -8,14 +8,13 @@ class Movies extends Component {
         this.state = {};
     }
 
+    componentDidMount() {
+    }
+
     render() {
         return (
             <div>
-                <Row>
-                    <Col span={15} offset={4}>
-                        <Empty/>
-                    </Col>
-                </Row>
+                <NowPlaying/>
             </div>
         );
     }
