@@ -6,6 +6,9 @@ import {CAUSERIE_QUERY_LIST,} from "../../store/actionTypes";
 import Causerie from "../../pages/blog/Causerie";
 import Movies from "../../pages/blog/Movies";
 import jwt_decode from 'jwt-decode'
+import Creation from "../../pages/blog/Creation";
+
+import './style.css';
 
 const {TabPane} = Tabs;
 
@@ -66,8 +69,8 @@ class Blog extends Component {
                     <TabPane tab="我的文章" key="2">
                         <h3 style={{textAlign: "center"}}> {text} </h3>
                     </TabPane>
-                    <TabPane tab="开始创作" key="3">
-                        <h3 style={{textAlign: "center"}}> {text} </h3>
+                    <TabPane tab="开始创作" key="creation">
+                        <Creation/>
                     </TabPane>
                     <TabPane tab="随心一笔" key="causerie">
                         <Causerie
@@ -77,7 +80,7 @@ class Blog extends Component {
                         />
                     </TabPane>
                     <TabPane tab="影片推荐" key="4">
-                        <Movies />
+                        <Movies/>
                     </TabPane>
                     <TabPane tab="心栖书屋" key="5">
                         <h3 style={{textAlign: "center"}}> {text} </h3>

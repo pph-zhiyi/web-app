@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Avatar, Button, List, Skeleton} from 'antd';
 
 const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
+// const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
 class NowPlaying extends Component {
     constructor(props) {
@@ -85,7 +85,7 @@ class NowPlaying extends Component {
                 dataSource={list}
                 renderItem={item => (
                     <List.Item
-                        actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+                        actions={[<span key="list-loadmore-edit">edit</span>, <span key="list-loadmore-more">more</span>]}
                     >
                         <Skeleton avatar title={false} loading={item.loading} active>
                             <List.Item.Meta
