@@ -13,9 +13,9 @@ class Causerie extends Component {
         const {causerieObj, jti, queryCauserieList} = this.props;
 
         return (
-            <div>
+            <div className='causerie-body'>
                 <Row>
-                    <Col span={15} offset={4}>
+                    <Col span={24}>
                         <CommentList
                             causerieObj={causerieObj}
                             loading={this.state.loading}

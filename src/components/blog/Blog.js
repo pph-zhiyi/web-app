@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {Icon, Popover, Radio, Tabs} from 'antd';
+import {
+    FireOutlined, BookOutlined, CoffeeOutlined, HighlightOutlined, YoutubeOutlined, ReadOutlined
+} from '@ant-design/icons';
 import {connect} from 'react-redux';
 import * as causerieService from "../../services/causerieService";
 import {CAUSERIE_QUERY_LIST,} from "../../store/actionTypes";
@@ -63,26 +66,62 @@ class Blog extends Component {
                     defaultActiveKey="causerie"
                     tabPosition={mode}
                 >
-                    <TabPane tab="首页" key="index">
+                    <TabPane
+                        key="index"
+                        tab={<>
+                            <FireOutlined/>
+                            <b>首页</b>
+                        </>}
+                    >
                         <h3 style={{textAlign: "center"}}> {text} </h3>
                     </TabPane>
-                    <TabPane tab="我的文章" key="2">
+                    <TabPane
+                        key="2"
+                        tab={<>
+                            <BookOutlined/>
+                            <b>我的文章</b>
+                        </>}
+                    >
                         <h3 style={{textAlign: "center"}}> {text} </h3>
                     </TabPane>
-                    <TabPane tab="开始创作" key="creation">
+                    <TabPane
+                        key="creation"
+                        tab={<>
+                            <CoffeeOutlined/>
+                            <b>开始创作</b>
+                        </>}
+                    >
                         <Creation/>
                     </TabPane>
-                    <TabPane tab="随心一笔" key="causerie">
+                    <TabPane
+                        key="causerie"
+                        tab={<>
+                            <HighlightOutlined/>
+                            <b>随心一笔</b>
+                        </>}
+                    >
                         <Causerie
                             jti={this.state.jti}
                             causerieObj={causerieObj}
                             queryCauserieList={queryCauserieList}
                         />
                     </TabPane>
-                    <TabPane tab="影片推荐" key="4">
+                    <TabPane
+                        key="4"
+                        tab={<>
+                            <YoutubeOutlined/>
+                            <b>影片推荐</b>
+                        </>}
+                    >
                         <Movies/>
                     </TabPane>
-                    <TabPane tab="心栖书屋" key="5">
+                    <TabPane
+                        key="5"
+                        tab={<>
+                            <ReadOutlined/>
+                            <b>心栖书屋</b>
+                        </>}
+                    >
                         <h3 style={{textAlign: "center"}}> {text} </h3>
                     </TabPane>
                 </Tabs>

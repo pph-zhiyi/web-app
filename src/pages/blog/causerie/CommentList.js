@@ -55,7 +55,7 @@ class CommentList extends Component {
                        onClick={() => this.openUser(item['authorUser'])}
                     > {item['authorName']} </b>
                 </p>,
-                content: <i><b>{item['content']}</b></i>,
+                content: <b>{item['content']}</b>,
                 datetime: moment(moment(item['commitTime']).format('YYYY-MM-DD')).fromNow()
             });
             return item;
@@ -98,24 +98,28 @@ class CommentList extends Component {
             return item;
         });
         return [
-            <span key="comment-basic-like">
+            <span
+                key="comment-basic-like"
+                onClick={() => this.userLike(contentId, theme === 1 ? null : 1)}
+            >
                 <Tooltip title="赞">
                     <Icon
                         type="like"
                         theme={theme === 1 ? "filled" : "outlined"}
-                        onClick={() => this.userLike(contentId, theme === 1 ? null : 1)}
                     />
                 </Tooltip>
                 <Tooltip title={linkName === '暂无' ? linkName : linkName.substring(1)}>
                     <span className='action-basic-span'>{link}</span>
                 </Tooltip>
                 </span>,
-            <span key="comment-basic-dislike">
+            <span
+                key="comment-basic-dislike"
+                onClick={() => this.userLike(contentId, theme === 0 ? null : 0)}
+            >
                 <Tooltip title="踩">
                     <Icon
                         type="dislike"
                         theme={theme === 0 ? "filled" : "outlined"}
-                        onClick={() => this.userLike(contentId, theme === 0 ? null : 0)}
                     />
                 </Tooltip>
                 <Tooltip title={dislikeName === '暂无' ? dislikeName : dislikeName.substring(1)}>
@@ -161,21 +165,21 @@ class CommentList extends Component {
                     }
                 </span>
             </span>,
-            <span key="comment-star-comment">
+            <span
+                key="comment-star-comment"
+                onClick={() => this.userStar()}
+            >
                 <Tooltip title="收藏">
-                      <Icon
-                          type="star"
-                          onClick={() => this.userStar()}
-                      /> 收藏
+                      <Icon type="star"/> 收藏
                 </Tooltip>
                 <span className='action-basic-span'>{0}</span>
             </span>,
-            <span key="comment-share-alt-comment">
+            <span
+                key="comment-share-alt-comment"
+                onClick={() => this.userShareAlt()}
+            >
                 <Tooltip title="转发">
-                      <Icon
-                          type="share-alt"
-                          onClick={() => this.userShareAlt()}
-                      /> 分享
+                      <Icon type="share-alt"/> 分享
                 </Tooltip>
             </span>,
             <Popconfirm
@@ -294,7 +298,7 @@ class CommentList extends Component {
                                             </Tooltip>
                                         </span>
                                     }
-                                    description={<i><b>{item['commentContent']}</b></i>}
+                                    description={<b>{item['commentContent']}</b>}
                                 />
                             </List.Item>
                         )}
