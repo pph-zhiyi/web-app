@@ -3,12 +3,25 @@ import {Button, Divider, Upload} from 'antd'
 import {EyeOutlined, FileImageOutlined} from '@ant-design/icons'
 import BraftEditor from 'braft-editor'
 import {ContentUtils} from 'braft-utils'
+import Table from 'braft-extensions/dist/table'
 
 import 'braft-editor/dist/index.css'
+import 'braft-extensions/dist/table.css'
+
+const options = {
+    defaultColumns: 5, // 默认列数
+    defaultRows: 5, // 默认行数
+    withDropdown: true, // 插入表格前是否弹出下拉菜单
+    columnResizable: true, // 是否允许拖动调整列宽，默认false
+    exportAttrString: 'border="1" style="border-collapse: collapse"', // 指定输出HTML时附加到table标签上的属性字符串
+    // includeEditors: ['id-1'], // 指定该模块对哪些BraftEditor生效，不传此属性则对所有BraftEditor有效
+    // excludeEditors: ['id-2']  // 指定该模块对哪些BraftEditor无效
+};
 
 const Editor = () => {
     const [content, setContent] = useState(BraftEditor.createEditorState(null));
     const [outputHTML, setOutputHTML] = useState(null);
+    BraftEditor.use(Table(options));
 
     const handleChange = (v) => {
         setContent(v);
