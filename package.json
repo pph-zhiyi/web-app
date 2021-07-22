@@ -20,7 +20,7 @@
     "redux": "^4.0.4",
     "redux-saga": "^1.1.1",
     "redux-thunk": "^2.3.0",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
